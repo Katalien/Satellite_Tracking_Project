@@ -1,0 +1,16 @@
+
+.vs/Satellite_Tracking_Project/v17/.suo
+*.db
+*.db-shm
+*.opendb
+*.ipch
+*.tlog
+*.recipe
+*.db-wal
+*.obj
+*.ilk
+*.idb
+*.pdb
+*.log
+*.user
+Debug/Satellite_Tracking_Project.vcxproj.FileListAbsolute.txt
