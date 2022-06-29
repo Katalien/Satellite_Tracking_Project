@@ -33,3 +33,4 @@ string Handler::GetData(string name) {
     string info = tmp_info_string.substr(pos_info, DATASIZE - pos_info);
     return info;
 }
+

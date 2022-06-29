@@ -153,6 +153,7 @@
   <ItemGroup>
     <ClCompile Include="Handler.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="Satellite.cpp" />
     <ClCompile Include="test.cpp" />
   </ItemGroup>
   <ItemGroup>

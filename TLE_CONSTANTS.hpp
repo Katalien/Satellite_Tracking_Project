@@ -3,7 +3,7 @@
 
 const byte number_start = 3;
 const byte number_end = 7;
-const byte secondLine = 69;
+const byte secondLine = 69 + 2;
 const byte first_der_start = 34;
 const byte first_der_end = 43;
 const byte second_der_start = 45;
