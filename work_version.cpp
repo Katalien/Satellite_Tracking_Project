@@ -1,3 +1,5 @@
+// used @dnwrnr sgp4 library "https://github.com/dnwrnr/sgp4"
+
 #define CURL_STATICLIB
 #include <curl\curl.h>
 #include <iostream>
