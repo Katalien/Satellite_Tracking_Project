@@ -1,0 +1,5 @@
+
+*.tlog
+*.enc
+*.obj
+*.recipe
