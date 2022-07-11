@@ -7,10 +7,10 @@ using namespace std;
 
 class ComPort {
 public:
+	ComPort() {};
 	ComPort(LPCTSTR portName) : portName(portName) {};
-	void GetConnection(); //return -1 for error and check (where)?  assert?
+	void GetConnection();
 	void ClosePort();
-	void SetAngles(double azimuth, double elevation);
 	void GiveCommand(char* com);
 	void ReadCOM();
 	void TurnOnAngles(int azimuth, int elevation);

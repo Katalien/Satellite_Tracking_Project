@@ -1,11 +1,15 @@
-////#include <iostream>
-////#include <string>
-////
-////using namespace std;
-////
-////int main() {
-////	char a[] = "W123 567";
-////	char* p = new char[8];
-////	cout << sizeof(a) << " " << sizeof(p) << endl;
-////
-////}
+//#include <iostream>
+//#include <string>
+//#include <fstream>
+//
+//using namespace std;
+//
+//int main() {
+//	ofstream satFile;
+//	satFile.open("sat_tracking.txt");
+//	if (satFile.is_open()) {
+//		for (int i = 0; i < 10; i++) {
+//			satFile <<i <<  "  ;dl;ds" << endl;
+//		}
+//	}
+//}
