@@ -1,7 +1,6 @@
 #pragma once
 #include <iostream>
 #include <windows.h>
-#include <cassert>
 #include "ComPort.hpp"
 
 #define MAX_COM_SIZE 8;

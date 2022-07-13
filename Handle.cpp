@@ -20,6 +20,7 @@ string Handle::GetTleData() {
         data = curl_easy_perform(curl);
         curl_easy_cleanup(curl);
     }
+    delete curl;
     return dataString;
 };
 
@@ -30,7 +31,6 @@ string Handle::GetTleData() {
 /// <returns>String with tle data of specific satellite</returns>
 string Handle::GetSatelliteData(string name) {
     string dataString = GetTleData();
-   // cout << dataString << endl;
     size_t pos = dataString.find(name);
     if (pos == string::npos) {
         cout << "the satellite doesn't exist" << endl << endl;
@@ -65,25 +65,7 @@ void Handle::WriteFile(DateTime time, int azimuth, int elevation) {
     }
     else { cout << "file is not open" << endl; }
 }
-//
-//void WriteFile(list<struct PassDetails>* pass_list) {
-//    std::stringstream ss;
-//
-//    ss << std::right << std::setprecision(1) << std::fixed;
-//
-//    std::list<struct PassDetails>::const_iterator itr = pass_list.begin();
-//    do
-//    {
-//        ss << "AOS: " << itr->aos.AddHours(3.0)
-//            << ", LOS: " << itr->los.AddHours(3.0)
-//            << ", Max El: " << std::setw(4) << Util::RadiansToDegrees(itr->max_elevation)
-//            << ", Duration: " << (itr->los - itr->aos)
-//            << std::endl << std::endl;
-//    } while (++itr != pass_list.end());
-//
-//    std::cout << ss.str();
-//}
-//
+
 void Handle::CloseFile() {
     file.close();
 }

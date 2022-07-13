@@ -1,35 +1,37 @@
 #include "Satellite.hpp"
 
-int radiansToDegrees(int x) {
-	return (int)(x * 180 / 3.14);
+double radiansToDegrees(double x) {
+	return (x * 180 / 3.14);
 }
 
-Satellite::Satellite(string satInfo, string name) : name(name) {
-	string str1 = satInfo.substr(0, 25);
-	string str2 = satInfo.substr(26, 69);
-	string str3 = satInfo.substr(97, 69);
-	tle = new Tle(str1, str2, str3);
+Satellite::Satellite(string info, string name) : name(name) {
+	string str1 = info.substr(0, 25);
+	string str2 = info.substr(26, 69);
+	string str3 = info.substr(97, 69);
+    tle = make_shared<Tle>(str1, str2, str3);
+    UpdateData();
 }
 
 
-void SatelliteTrack::UpdateData() {
+void Satellite::UpdateData() {
 	Observer obs(site_latitude, site_longtitude, site_altitude); // 
 	CoordGeodetic site(site_latitude, site_longtitude, site_altitude);
 	info.time = GetTle().Epoch().Now();
 	SGP4 sgp4(GetTle());
-	Eci eci = sgp4.FindPosition(info.time);;
-	// time = 
+	Eci eci = sgp4.FindPosition(info.time);
 	info.localTime = info.time.AddHours(3.0);
 	CoordTopocentric topo = obs.GetLookAngle(eci);
 	CoordGeodetic geo = eci.ToGeodetic();
-    info.azimuth = radiansToDegrees(topo.azimuth);
-    info.elevation = radiansToDegrees(topo.elevation);
+    info.azimuth = (int)radiansToDegrees(topo.azimuth);
+    info.elevation = (int)radiansToDegrees(topo.elevation);
     info.longtitude = radiansToDegrees(geo.longitude);
     info.latitude = radiansToDegrees(geo.latitude);
     info.altitude = radiansToDegrees(geo.altitude);
+   // cout << topo.azimuth << " " << topo.elevation << endl;
+    //cout << info.azimuth << " " << info.elevation << endl;
 };
 
-double SatelliteTrack::FindMaxElevation(
+double Satellite::FindMaxElevation(
     const CoordGeodetic& user_geo,
     SGP4& sgp4,
     const DateTime& aos,
@@ -102,7 +104,7 @@ double SatelliteTrack::FindMaxElevation(
     return max_elevation;
 }
 
-DateTime SatelliteTrack::FindCrossingPoint(
+DateTime Satellite::FindCrossingPoint(
     const CoordGeodetic& user_geo,
     SGP4& sgp4,
     const DateTime& initial_time1,
@@ -184,7 +186,7 @@ DateTime SatelliteTrack::FindCrossingPoint(
 }
 
 
-void SatelliteTrack::UpdatePassDetails(const CoordGeodetic& user_geo,
+void Satellite::UpdatePassDetails(const CoordGeodetic& user_geo,
     SGP4& sgp4,
     const DateTime& start_time,
     const DateTime& end_time,
@@ -243,7 +245,7 @@ void SatelliteTrack::UpdatePassDetails(const CoordGeodetic& user_geo,
 }
 
 
-void SatelliteTrack::CreatePassList(
+void Satellite::CreatePassList(
     const CoordGeodetic& user_geo,
     SGP4& sgp4,
     const DateTime& start_time,
@@ -311,7 +313,7 @@ void SatelliteTrack::CreatePassList(
                 current_time,
                 false);
 
-            struct PassDetails pd;
+            PassDetails pd;
             pd.aos = aos_time;
             pd.los = los_time;
             pd.max_elevation = FindMaxElevation(
@@ -354,7 +356,7 @@ void SatelliteTrack::CreatePassList(
          * satellite still above horizon at end of search period, so use end
          * time as los
          */
-        struct PassDetails pd;
+        PassDetails pd;
         pd.aos = aos_time;
         pd.los = end_time;
         pd.max_elevation = FindMaxElevation(user_geo, sgp4, aos_time, end_time);
@@ -363,7 +365,9 @@ void SatelliteTrack::CreatePassList(
     }
 }
 
-void SatelliteTrack::CreateSchedule(int numOfDays) {
+
+
+void Satellite::CreateSchedule(int numOfDays) {
     DateTime start_date = DateTime::Now(true);
     DateTime end_date(start_date.AddDays((double)numOfDays));
     CoordGeodetic geo(site_latitude, site_longtitude, site_altitude);
@@ -373,7 +377,7 @@ void SatelliteTrack::CreateSchedule(int numOfDays) {
         std::cout << "No passes found" << std::endl;
     }
     else {
-        string path = "C:/Users/EZinyakova/source/repos/Satellite_New/sat_track_documentation/Schedule_" + name + ".txt";
+        string path = "C:/Users/z.kate/source/repos/Satellite_Tracking_Project/sat_documentation/Schedule_" + name + ".txt";
         ofstream file;
         file.open(path);
 
@@ -389,7 +393,7 @@ void SatelliteTrack::CreateSchedule(int numOfDays) {
     }
 }
 
-bool SatelliteTrack::IfVisible(){
+bool Satellite::IfVisible(){
     UpdateData();
     if (info.azimuth >= 0 && info.elevation >= 0) {
         return true;

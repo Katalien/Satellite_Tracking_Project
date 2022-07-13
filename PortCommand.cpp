@@ -2,17 +2,13 @@
 #define _CRT_SECURE_NO_WARNINGS
 #include <iostream>
 #include <string>
+#include <vector>
 #include "PortCommand.hpp"
 #pragma warning(disable : 4996)
 
 using namespace std;
+using std::vector;
 
-/// <summary>
-/// Create command to turn on angles
-/// </summary>
-/// <param name="azimuth_d"> azimuth </param>
-/// <param name="elevation_d"> elevation </param>
-/// <returns> Port command i nform of char array </returns>
 char* PortCommand::TurnAnglesCommand(int azimuth_d, int elevation_d) {
 	if (azimuth_d < 0 || elevation_d < 0 || azimuth_d > 360 || elevation_d > 180) {
 		cout << "Invalid angles" << endl;
@@ -28,15 +24,10 @@ char* PortCommand::TurnAnglesCommand(int azimuth_d, int elevation_d) {
 		command[i + 4] = elevation[i - 1];
 	}
 	command[4] = ' ';
-	//delete(azimuth);
-	//delete(elevation);
 	return command;
 }
 
-/// <summary>
-/// Create port command to get both angles
-/// </summary>
-/// <returns> command in form of char array </returns>
+
 char* PortCommand::GetAnglesCommand() {
 	char* command = new char[2];
 	command[0] = 'C';
@@ -44,11 +35,7 @@ char* PortCommand::GetAnglesCommand() {
 	return command;
 }
 
-/// <summary>
-/// Convert int to char array
-/// </summary>
-/// <param name="x"> integer number </param>
-/// <returns> pointer to array of chars </returns>
+
 char* PortCommand::BuildAngleFromInt(int x) {// why double?
 	string data_s = to_string(x); // data loss during type conversion
 	char* data = new char[3]; // who owns this memory?
@@ -65,3 +52,20 @@ char* PortCommand::BuildAngleFromInt(int x) {// why double?
 	strcpy(data, data_s.c_str()); // unsafe copy
 	return data;
 }
+
+//vector<char> PortCommand::BuildAngleFromInt(int x) {
+//	string data_s = to_string(x); 
+//	vector<char> data; 
+//	if (x == 0) { 
+//		data.push_back('0'); 
+//		data.push_back('0'); 
+//		data.push_back('0'); 
+//		return data;
+//	}
+//	if (x < 100 && x != 0) { // wrong comparison
+//		data_s = '0' + data_s;
+//	}
+//
+//	strcpy(data, data_s.c_str()); // unsafe copy
+//	return data;
+//}

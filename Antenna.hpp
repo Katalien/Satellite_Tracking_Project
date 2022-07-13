@@ -7,13 +7,14 @@
 #include "Handle.hpp"
 
 class ComPort;
-class SatelliteTrack;
+class Satellite;
 
 class Antenna {
 public:
-	Antenna(ComPort* port) : port(port) {};
+	Antenna() {};
+	Antenna(shared_ptr<ComPort> port) : port(port) {};
 
-	void TrackSatellite(SatelliteTrack* sat) {
+	void TrackSatellite(shared_ptr<Satellite> sat) {
 		Handle handle;
 		handle.OpenNewFile(sat->GetName());
 		sat->UpdateData();
@@ -32,8 +33,8 @@ public:
 					}
 					second = -1;
 				}
-				port->TurnOnAngles(sat->GetAzimuth(), sat->GetElevation());
-				handle.WriteFile(sat->GetLocalTime(), sat->GetAzimuth(), sat->GetElevation());
+				//port->TurnOnAngles(sat->GetAzimuth(), sat->GetElevation());
+				//handle.WriteFile(sat->GetLocalTime(), sat->GetAzimuth(), sat->GetElevation());
 				UpdateCurrentAngles();
 				// for check
 				cout << sat->GetTime() << endl;
@@ -60,5 +61,5 @@ public:
 private:
 	int azimuth = 0;
 	int elevation = 0;
-	ComPort* port;
+	shared_ptr<ComPort> port;
 };

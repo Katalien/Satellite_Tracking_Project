@@ -2,6 +2,7 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include <memory>
 #include "ComPort.hpp"
 #include "TleData.hpp"
 #include "Satellite.hpp"
@@ -9,85 +10,94 @@
 
 using std::vector;
 
-void Track(TleData* tle) {
+// парсер командной строки
+// класс связи спутника, антенны, порта
+// std::optional
+
+shared_ptr<Satellite> MaxElevationSat(const shared_ptr<Satellite>& s1, const shared_ptr<Satellite>& s2) {
+	if (s1->GetMaxElevation() >= s2->GetMaxElevation()) {
+		return s1;
+	}
+	else {
+		return s2;
+	}
+}
+
+// return next satellite
+shared_ptr<Satellite> NextSat(const vector<shared_ptr<Satellite>>& satArray) {
+	shared_ptr<Satellite> current = satArray.at(0);
+	for (int i = 1; i < satArray.size(); ++i) {
+		if (current->GetAos() > satArray.at(i)->GetAos()) {
+			current = satArray.at(i);
+		}
+		if (current->GetAos() == satArray.at(i)->GetAos()) {
+			current = MaxElevationSat(current, satArray.at(i));
+		}
+	}
+	return current;
+}
+
+void AutoTracking(const shared_ptr<TleData>& tle) {
+	int amount;
+	DateTime currentTime = DateTime::Now();
+	DateTime endTime = currentTime.AddDays(1);
+	shared_ptr<ComPort> port = make_shared<ComPort>(L"COM3");
+	port->GetConnection();
+	shared_ptr<Antenna> antenna = make_shared<Antenna>(port);
+	shared_ptr<Satellite> currentSat = make_shared<Satellite>();
+	cout << "Enter number of satellites" << endl;
+	cin >> amount;
+	vector<shared_ptr<Satellite>> satArray;
+	for (int i = 0; i < amount; i++) {
+		string name;
+		cout << i << " Enter satellite name:" << endl;
+		cin >> name;
+		string info = tle->GetSatelliteData(name);
+		shared_ptr<Satellite> satellite = make_shared<Satellite>(info, name);
+		satArray.push_back(satellite);
+	}
+
+	while (true) { // while: check in one day
+		currentTime = DateTime::Now();
+		for (int i = 0; i < amount; ++i) {
+			satArray.at(i)->UpdatePassInfo(currentTime);
+		}
+		currentSat = NextSat(satArray);
+		antenna->TrackSatellite(currentSat);
+
+	}
+}
+
+void Track(const shared_ptr<TleData>& tle) {
 	string name;
 	cout << "Enter satellite:" << endl;
 	getline(cin, name);
 	string info = tle->GetSatelliteData(name);
-	SatelliteTrack* satTrack = new SatelliteTrack(info, name);
-	ComPort* port = new ComPort(L"COM3");
+	shared_ptr<Satellite> satTrack = make_shared<Satellite>(info, name);
+	satTrack->UpdateData();
+	shared_ptr<ComPort> port = make_shared<ComPort>(L"COM3");
 	port->GetConnection();
-	Antenna* ant = new Antenna(port);
-	ant->TrackSatellite(satTrack);
+	shared_ptr<Antenna> antenna = make_shared<Antenna>(port);
+	shared_ptr<Antenna> antenna = make_shared<Antenna>();
+	antenna->TrackSatellite(satTrack);
 	port->ClosePort();
-	delete(satTrack);
-	delete(ant);
-	delete(port);
 }
 
-void Predict(TleData* tle) {
+void Predict(const shared_ptr<TleData>& tle) {
 	string name;
 	int days;
 	cout << "Enter satellite:" << endl;
 	getline(cin, name);
 	string info = tle->GetSatelliteData(name);
-	SatelliteTrack* satPred = new SatelliteTrack(info, name);
+	shared_ptr<Satellite> satPred = make_shared<Satellite>(info, name);
 	cout << "Enter amount of days for schedule:" << endl;
 	cin >> days;
 	satPred->CreateSchedule(days);
-	delete(satPred);
-}
-
-void AutoTracking(TleData* tle) {
-	int amount;
-	ComPort* port = new ComPort(L"COM3");
-	port->GetConnection();
-	Antenna* antenna = new Antenna(port);
-	vector<SatelliteTrack*> visible;
-	SatelliteTrack* currentSat;
-	cout << "Enter number of satellites" << endl;
-	cin >> amount;
-	SatelliteTrack** satArray = new SatelliteTrack*[amount];
-	for (int i = 0; i < amount; i++) {
-		string name;
-		cout << i << " Enter satellite name:" << endl;
-		getline(cin, name);
-		string info = tle->GetSatelliteData(name);
-		SatelliteTrack* satellite = new SatelliteTrack(info, name);
-		satArray[i] = satellite;
-	}
-	while (1) {
-		for (int i = 0; i < amount; ++i) {
-			if (satArray[i]->IfVisible() == true) {
-				visible.push_back(satArray[i]);
-			}
-		}
-
-		if (visible.size() == 0) {
-			antenna->Park();
-		}
-
-		if (visible.size() == 1) {
-			antenna->TrackSatellite(visible.at(0));
-			visible.pop_back();
-		}
-		if (visible.size() > 1) {
-			
-		}
-	}
-	
-
-
-	for (int i = 0; i < amount; i++) {
-		delete(satArray[i]);
-	}
-	delete(satArray);
 }
 
 int main() {
-	TleData* tle(new TleData);
-	Predict(tle);
-	delete(tle);
+	shared_ptr<TleData> tle = make_shared<TleData>();
+	Track(tle);
 	return 0;
 }
 
@@ -120,3 +130,24 @@ int main() {
 ////		sec++;
 ////	}
 ////}
+
+//
+//
+//while (1) {
+//	for (int i = 0; i < amount; ++i) {
+//		if (satArray[i]->IfVisible() == true) {
+//			visible.push_back(satArray[i]);
+//		}
+//		satArray[i]->CreateSchedule(10); // ? num of days
+//	}
+//
+//	if (visible.size() == 0) {
+//		antenna->Park();
+//	}
+//
+//	if (visible.size() == 1) {
+//		antenna->TrackSatellite(visible.at(0));
+//		visible.pop_back();
+//	}
+//
+//}
