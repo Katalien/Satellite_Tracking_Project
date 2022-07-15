@@ -138,9 +138,6 @@
     <ClCompile Include="User.cpp">
       <Filter>Файлы ресурсов</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\GitHubRepos\Satellite_Tracking_Project\sat_track.cpp">
-      <Filter>Файлы ресурсов</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Antenna.hpp">

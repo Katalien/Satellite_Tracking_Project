@@ -155,7 +155,6 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\GitHubRepos\Satellite_Tracking_Project\sat_track.cpp" />
     <ClCompile Include="ComPort.cpp" />
     <ClCompile Include="com_command_test.cpp" />
     <ClCompile Include="com_connect_test.cpp" />
