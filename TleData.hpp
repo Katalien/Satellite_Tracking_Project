@@ -46,6 +46,8 @@ public:
         return info_tmp;
     }
 
+    void PrintTle() { cout << tleData << endl; };
+
 private:
     string tleData;
     static size_t DataToString(void* contents, size_t size, size_t nmemb, void* userp) {

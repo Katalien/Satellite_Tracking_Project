@@ -50,6 +50,8 @@ public:
 	void UpdateData();
 
 	void CreateSchedule(int numOfDays);
+	void WriteScheduleIFile();
+	void WriteScheduleIFile(string filename);
 
 	int GetAzimuth() const { return info.azimuth; };
 	int GetElevation() const { return info.elevation; }
@@ -59,7 +61,7 @@ public:
 	DateTime GetTime() const { return info.time; };
 	DateTime GetLocalTime() const { return info.localTime; };
 
-	bool IfVisible();
+	bool IsVisible();
 
 	DateTime GetAos() const { return passInfo.aos; };
 	DateTime GetLos() const { return passInfo.los; };

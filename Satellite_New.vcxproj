@@ -72,6 +72,7 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
+    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);C:\Users\EZinyakova\source\boost_1_79_0</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
@@ -88,13 +89,14 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>C:\Users\EZinyakova\source\repos\Satellite_Tracking\Satellite_Tracking\libsgp4;C:\Users\EZinyakova\source\curl\builds\libcurl-vc-x86-release-static-ipv6-sspi-schannel\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Users\EZinyakova\source\repos\Satellite_Tracking\Satellite_Tracking\libsgp4;C:\Users\EZinyakova\source\curl\builds\libcurl-vc-x86-release-static-ipv6-sspi-schannel\include;C:\Users\EZinyakova\source\boost_1_79_0</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>libcurl_a.lib;Ws2_32.lib;Crypt32.lib;Wldap32.lib;Normaliz.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>C:\Users\EZinyakova\source\curl\builds\libcurl-vc-x86-release-static-ipv6-sspi-schannel\lib</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>C:\Users\EZinyakova\source\curl\builds\libcurl-vc-x86-release-static-ipv6-sspi-schannel\lib;C:\Users\EZinyakova\source\boost_1_79_0\stage\lib</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -146,14 +148,14 @@
     <ClInclude Include="ComPort.hpp" />
     <ClInclude Include="Handle.hpp" />
     <ClInclude Include="PortCommand.hpp" />
+    <ClInclude Include="Program.hpp" />
     <ClInclude Include="Satellite.hpp" />
     <ClInclude Include="SatelliteTrack.hpp" />
+    <ClInclude Include="SatTrackInterface.hpp" />
     <ClInclude Include="TleData.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ComPort.cpp" />
-    <ClCompile Include="com_command.cpp" />
-    <ClCompile Include="com_connect.cpp" />
     <ClCompile Include="Handle.cpp" />
     <ClCompile Include="libsgp4\CoordGeodetic.cc" />
     <ClCompile Include="libsgp4\CoordTopocentric.cc" />
@@ -175,8 +177,6 @@
     <ClCompile Include="PortCommand.cpp" />
     <ClCompile Include="Program.cpp" />
     <ClCompile Include="Satellite.cpp" />
-    <ClCompile Include="sat_predict.cpp" />
-    <ClCompile Include="sat_track.cpp" />
     <ClCompile Include="test.cpp" />
     <ClCompile Include="User.cpp" />
   </ItemGroup>

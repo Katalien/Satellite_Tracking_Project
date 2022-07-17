@@ -2,6 +2,7 @@
 #include <iostream>
 #include <string>
 #include <memory>
+
 #include "ComPort.hpp"
 #include "Satellite.hpp"
 #include "Handle.hpp"
@@ -18,14 +19,15 @@ public:
 		Handle handle;
 		handle.OpenNewFile(sat->GetName());
 		sat->UpdateData();
-		if (sat->GetAzimuth() < 0 || sat->GetElevation() < 0) {
-			cout << "Satellite is out of view " << endl;
-			return;
-		}
+		
 		sat->UpdateData();
 		int second = sat->GetTime().Second();
+		//cout << "I am tracking " << sat->GetName() << endl;
 		while (1) {
 			sat->UpdateData();
+			if (sat->IsVisible() == false) {
+				return;
+			}
 			if (sat->GetTime().Second() == second) {
 				if (sat->GetTime().Second() == 59) {
 					while (sat->GetTime().Second() != 0) {
@@ -33,8 +35,8 @@ public:
 					}
 					second = -1;
 				}
-				//port->TurnOnAngles(sat->GetAzimuth(), sat->GetElevation());
-				//handle.WriteFile(sat->GetLocalTime(), sat->GetAzimuth(), sat->GetElevation());
+				port->TurnOnAngles(sat->GetAzimuth(), sat->GetElevation());
+				handle.WriteFile(sat->GetLocalTime(), sat->GetAzimuth(), sat->GetElevation());
 				UpdateCurrentAngles();
 				// for check
 				cout << sat->GetTime() << endl;
@@ -47,8 +49,8 @@ public:
 	};
 
 	void UpdateCurrentAngles() {
-		azimuth = port->GetAzimuth();
 		elevation = port->GetElevation();
+		azimuth = port->GetAzimuth();
 	}
 
 	int GetAzimuth() { return azimuth; };
@@ -56,6 +58,10 @@ public:
 
 	void Park() {
 		port->TurnOnAngles(0, 0);
+	}
+
+	void Move(int az, int el) {
+		port->TurnOnAngles(az, el);
 	}
 
 private:

@@ -22,8 +22,8 @@ void Satellite::UpdateData() {
 	info.localTime = info.time.AddHours(3.0);
 	CoordTopocentric topo = obs.GetLookAngle(eci);
 	CoordGeodetic geo = eci.ToGeodetic();
-    info.azimuth = (int)radiansToDegrees(topo.azimuth);
-    info.elevation = (int)radiansToDegrees(topo.elevation);
+    info.azimuth = radiansToDegrees(topo.azimuth);
+    info.elevation = radiansToDegrees(topo.elevation);
     info.longtitude = radiansToDegrees(geo.longitude);
     info.latitude = radiansToDegrees(geo.latitude);
     info.altitude = radiansToDegrees(geo.altitude);
@@ -365,6 +365,38 @@ void Satellite::CreatePassList(
     }
 }
 
+void Satellite:: WriteScheduleIFile() {
+
+    string path = "C:/Users/z.kate/source/repos/Satellite_Tracking_Project/sat_documentation/" + name + ".txt";
+    ofstream file;
+    file.open(path);
+
+    list<struct PassDetails>::const_iterator itr = pass_list.begin();
+    do {
+        file << "AOS: " << itr->aos.AddHours(3.0)
+            << ", LOS: " << itr->los.AddHours(3.0)
+            << ", Max El: " << std::setw(4) << Util::RadiansToDegrees(itr->max_elevation)
+            << ", Duration: " << (itr->los - itr->aos)
+            << std::endl << std::endl;
+    } while (++itr != pass_list.end());
+    file.close();
+}
+
+
+void Satellite::WriteScheduleIFile(string filename) {
+    ofstream file;
+    file.open(filename);
+
+    list<struct PassDetails>::const_iterator itr = pass_list.begin();
+    do {
+        file << "AOS: " << itr->aos.AddHours(3.0)
+            << ", LOS: " << itr->los.AddHours(3.0)
+            << ", Max El: " << std::setw(4) << Util::RadiansToDegrees(itr->max_elevation)
+            << ", Duration: " << (itr->los - itr->aos)
+            << std::endl << std::endl;
+    } while (++itr != pass_list.end());
+    file.close();
+}
 
 
 void Satellite::CreateSchedule(int numOfDays) {
@@ -377,23 +409,11 @@ void Satellite::CreateSchedule(int numOfDays) {
         std::cout << "No passes found" << std::endl;
     }
     else {
-        string path = "C:/Users/z.kate/source/repos/Satellite_Tracking_Project/sat_documentation/Schedule_" + name + ".txt";
-        ofstream file;
-        file.open(path);
-
-        list<struct PassDetails>::const_iterator itr = pass_list.begin();
-        do {
-            file << "AOS: " << itr->aos.AddHours(3.0)
-                << ", LOS: " << itr->los.AddHours(3.0)
-                << ", Max El: " << std::setw(4) << Util::RadiansToDegrees(itr->max_elevation)
-                << ", Duration: " << (itr->los - itr->aos)
-                << std::endl << std::endl;
-        } while (++itr != pass_list.end());
-        file.close();
+       
     }
 }
 
-bool Satellite::IfVisible(){
+bool Satellite::IsVisible(){
     UpdateData();
     if (info.azimuth >= 0 && info.elevation >= 0) {
         return true;

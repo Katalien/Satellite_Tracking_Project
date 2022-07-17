@@ -72,22 +72,22 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>C:\Users\z.kate\source\curl\builds\libcurl-vc-x86-release-static-ipv6-sspi-schannel\include;$(IncludePath)</IncludePath>
+    <IncludePath>C:\Users\z.kate\source\curl\builds\libcurl-vc-x86-release-static-ipv6-sspi-schannel\include;$(IncludePath);C:\Users\z.kate\source\boost_1_79_0</IncludePath>
     <LibraryPath>C:\Users\z.kate\source\curl\builds\libcurl-vc-x86-release-static-ipv6-sspi-schannel\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>C:\Users\z.kate\source\curl\builds\libcurl-vc-x86-release-static-ipv6-sspi-schannel\include;$(IncludePath)</IncludePath>
+    <IncludePath>C:\Users\z.kate\source\curl\builds\libcurl-vc-x86-release-static-ipv6-sspi-schannel\include;$(IncludePath);C:\Users\z.kate\source\boost_1_79_0</IncludePath>
     <LibraryPath>C:\Users\z.kate\source\curl\builds\libcurl-vc-x86-release-static-ipv6-sspi-schannel\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>C:\Users\z.kate\source\curl\builds\libcurl-vc-x86-release-static-ipv6-sspi-schannel\include;$(IncludePath)</IncludePath>
+    <IncludePath>C:\Users\z.kate\source\curl\builds\libcurl-vc-x86-release-static-ipv6-sspi-schannel\include;$(IncludePath);C:\Users\z.kate\source\boost_1_79_0</IncludePath>
     <LibraryPath>C:\Users\z.kate\source\curl\builds\libcurl-vc-x86-release-static-ipv6-sspi-schannel\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>C:\Users\z.kate\source\curl\builds\libcurl-vc-x86-release-static-ipv6-sspi-schannel\include;$(IncludePath)</IncludePath>
+    <IncludePath>C:\Users\z.kate\source\curl\builds\libcurl-vc-x86-release-static-ipv6-sspi-schannel\include;$(IncludePath);C:\Users\z.kate\source\boost_1_79_0</IncludePath>
     <LibraryPath>C:\Users\z.kate\source\curl\builds\libcurl-vc-x86-release-static-ipv6-sspi-schannel\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -96,12 +96,13 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>C:\Users\z.kate\source\repos\Satellite_Tracking_Project\orbitTools\core;C:\Users\z.kate\source\repos\Satellite_Tracking_Project\orbitTools\orbit;C:\Users\z.kate\source\repos\sat_track_test\libsgp4;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Users\z.kate\source\repos\Satellite_Tracking_Project\orbitTools\core;C:\Users\z.kate\source\repos\Satellite_Tracking_Project\orbitTools\orbit;C:\Users\z.kate\source\repos\sat_track_test\libsgp4;%(AdditionalIncludeDirectories);C:\Users\z.kate\source\boost_1_79_0</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>libcurl_a.lib;Ws2_32.lib;Crypt32.lib;Wldap32.lib;Normaliz.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>C:\Users\z.kate\source\boost_1_79_0\stage\lib;</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -112,7 +113,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>C:\Users\z.kate\source\repos\Satellite_Tracking_Project\orbitTools\core;C:\Users\z.kate\source\repos\Satellite_Tracking_Project\orbitTools\orbit;C:\Users\z.kate\source\repos\sat_track_test\libsgp4;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Users\z.kate\source\repos\Satellite_Tracking_Project\orbitTools\core;C:\Users\z.kate\source\repos\Satellite_Tracking_Project\orbitTools\orbit;C:\Users\z.kate\source\repos\sat_track_test\libsgp4;%(AdditionalIncludeDirectories);C:\Users\z.kate\source\boost_1_79_0</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -120,6 +121,7 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>libcurl_a.lib;Ws2_32.lib;Crypt32.lib;Wldap32.lib;Normaliz.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>C:\Users\z.kate\source\boost_1_79_0\stage\lib;</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -128,12 +130,13 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>C:\Users\z.kate\source\repos\Satellite_Tracking_Project\orbitTools\core;C:\Users\z.kate\source\repos\Satellite_Tracking_Project\orbitTools\orbit;C:\Users\z.kate\source\repos\sat_track_test\libsgp4;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Users\z.kate\source\repos\Satellite_Tracking_Project\orbitTools\core;C:\Users\z.kate\source\repos\Satellite_Tracking_Project\orbitTools\orbit;C:\Users\z.kate\source\repos\sat_track_test\libsgp4;%(AdditionalIncludeDirectories);C:\Users\z.kate\source\boost_1_79_0</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>libcurl_a.lib;Ws2_32.lib;Crypt32.lib;Wldap32.lib;Normaliz.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>C:\Users\z.kate\source\boost_1_79_0\stage\lib;</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -144,7 +147,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>C:\Users\z.kate\source\repos\Satellite_Tracking_Project\orbitTools\core;C:\Users\z.kate\source\repos\Satellite_Tracking_Project\orbitTools\orbit;C:\Users\z.kate\source\repos\sat_track_test\libsgp4;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Users\z.kate\source\repos\Satellite_Tracking_Project\orbitTools\core;C:\Users\z.kate\source\repos\Satellite_Tracking_Project\orbitTools\orbit;C:\Users\z.kate\source\repos\sat_track_test\libsgp4;%(AdditionalIncludeDirectories);C:\Users\z.kate\source\boost_1_79_0</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -152,6 +155,7 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>libcurl_a.lib;Ws2_32.lib;Crypt32.lib;Wldap32.lib;Normaliz.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>C:\Users\z.kate\source\boost_1_79_0\stage\lib;</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -202,7 +206,10 @@
     <ClInclude Include="ComPort.hpp" />
     <ClInclude Include="Handle.hpp" />
     <ClInclude Include="PortCommand.hpp" />
+    <ClInclude Include="Program.hpp" />
     <ClInclude Include="Satellite.hpp" />
+    <ClInclude Include="SatelliteTrack.hpp" />
+    <ClInclude Include="SatTrackInterface.hpp" />
     <ClInclude Include="TleData.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
