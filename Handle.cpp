@@ -49,7 +49,8 @@ size_t Handle::DataToString(void* contents, size_t size, size_t nmemb, void* use
 }
 
 void Handle::OpenNewFile(string name) {
-    string path = "C:/Users/EZinyakova/source/repos/Satellite_New/sat_track_documentation/" + name + ".txt";
+    string path = "../sat_documentation/" + name + ".txt";
+   // string path = name + "txt";
     file.open(path);
 }
 

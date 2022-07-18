@@ -27,6 +27,4 @@ private:
 	shared_ptr<Satellite> NextSat(const vector<shared_ptr<Satellite>>& satArray);
 	shared_ptr<Satellite> MaxElevationSat(const vector<shared_ptr<Satellite>>& satList);
 	shared_ptr<Satellite> CompareElevation(const shared_ptr<Satellite>& s1, const shared_ptr<Satellite>& s2);
-
-
 };

@@ -366,8 +366,8 @@ void Satellite::CreatePassList(
 }
 
 void Satellite:: WriteScheduleIFile() {
-
-    string path = "C:/Users/z.kate/source/repos/Satellite_Tracking_Project/sat_documentation/" + name + ".txt";
+    string path = "../sat_documentation/" + name + ".txt";
+    /*string path = name + ".txt"; */
     ofstream file;
     file.open(path);
 
@@ -407,9 +407,6 @@ void Satellite::CreateSchedule(int numOfDays) {
     CreatePassList(geo, sgp4, start_date, end_date, 180);
     if (pass_list.begin() == pass_list.end()) {
         std::cout << "No passes found" << std::endl;
-    }
-    else {
-       
     }
 }
 

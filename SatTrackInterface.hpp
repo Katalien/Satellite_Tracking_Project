@@ -17,19 +17,12 @@ public:
 	shared_ptr<Antenna> antenna;
 
 	SatTrackInterface(LPCTSTR portName) {
-		port = make_shared<ComPort>(portName);
-		port->GetConnection();
-		antenna = make_shared<Antenna>(port);
 		shared_ptr<Satellite> sat = make_shared<Satellite>();
 		satellites.push_back(sat);
 	};
 
 	SatTrackInterface(int amount, ...) {
 		tle = make_shared<TleData>();
-		tle->PrintTle();
-		port = make_shared<ComPort>(L"COM3");
-		port->GetConnection();
-		antenna = make_shared<Antenna>(port);
 		va_list list;
 		va_start(list, amount);
 		for (int i = 0; i < amount; ++i) {
@@ -41,18 +34,44 @@ public:
 		va_end(list);
 	};
 
-	SatTrackInterface(vector<string> names) {
-		port = make_shared<ComPort>(L"COM3");
-		port->GetConnection();
-		antenna = make_shared<Antenna>(port);
-		
-		for (auto name : names) {
-			string info = tle->GetSatelliteData(name);
-			shared_ptr<Satellite> sat = make_shared<Satellite>(info, name);
-			satellites.push_back(sat);
+	SatTrackInterface(vector<string> const& names) {
+		tle = make_shared<TleData>();
+		for (auto& name : names) {
+			string info;
+			try {
+				info = tle->GetSatelliteData(name);
+			}
+			catch (const std::exception& ex) {
+				cout << "Check the entered data" << endl;
+				exit(-1);
+			}
+			satellites.emplace_back(make_shared<Satellite>(info, name));
+			
 		}
-
 	};
+
+	void ConnectAntena() {
+		port = make_shared<ComPort>(L"COM3");
+		try {
+			port->GetConnection();
+		}
+		catch (const std::exception& ex) {
+			cout << ex.what() << endl;
+			exit(-1);
+		}		
+		antenna = make_shared<Antenna>(port);
+	}
+
+	void CheckAntennaConnection() {
+		try {
+			antenna->UpdateCurrentAngles();
+		}
+		catch (const std::exception& ex) {
+			cout << ex.what() << endl;
+			cout << "No connection to antenna" << endl;
+			exit(-1);
+		}
+	}
 
 	vector<shared_ptr <Satellite>> GetSatellites() { return satellites; }
 	int GetAmount() { return satellites.size(); };
@@ -61,19 +80,18 @@ public:
 		if (satellites.size() == 1) {
 			return satellites.at(0);
 		}
+		return nullptr;
 	}
 
 	shared_ptr <Satellite> GetSatelliteByName(string name) {
-		for (auto sat : satellites) {
+		for (auto &sat : satellites) {
 			if (sat->GetName() == name) {
 				return sat;
 			}
 		}
 	}
 
-	~SatTrackInterface() {
-		port->ClosePort();
-	}
+	
 
 private:
 	shared_ptr<TleData> tle;

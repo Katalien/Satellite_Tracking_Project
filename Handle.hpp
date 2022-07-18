@@ -14,7 +14,7 @@ using namespace std;
 
 class Satellite;
 class SatellitePredict;
-struct PassDetails;
+class PassDetails;
 
 class Handle {
 public:

@@ -14,11 +14,11 @@ void ComPort::GetConnection() {
     hSerial = ::CreateFile(portName, GENERIC_READ | GENERIC_WRITE, 0, 0, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0);
     if (hSerial == INVALID_HANDLE_VALUE) {
         if (GetLastError() == ERROR_FILE_NOT_FOUND) {
-            cout << "serial port does not exist.\n";
-            // assert(GetLastError() != ERROR_FILE_NOT_FOUND);
+            //cout << "serial port does not exist.\n";
+            throw exception("serial port does not exist.\n");
         }
-        cout << "some other error occurred." << endl << " Error: " << GetLastError();
-        //assert(hSerial != INVALID_HANDLE_VALUE);
+        //cout << "some other error occurred." << endl << " Error: " << GetLastError();
+        throw exception("some other error occurred.\n");
     }
     else {
         cout << "Connected" << endl;

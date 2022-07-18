@@ -171,7 +171,6 @@
     <ClCompile Include="libsgp4\TimeSpan.cc" />
     <ClCompile Include="libsgp4\Tle.cc" />
     <ClCompile Include="libsgp4\TleException.cc" />
-    <ClCompile Include="libsgp4\Util.cc" />
     <ClCompile Include="libsgp4\Vector.cc" />
     <ClCompile Include="master.cpp" />
     <ClCompile Include="PortCommand.cpp" />

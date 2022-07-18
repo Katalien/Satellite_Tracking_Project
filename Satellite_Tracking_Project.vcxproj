@@ -208,8 +208,6 @@
     <ClInclude Include="PortCommand.hpp" />
     <ClInclude Include="Program.hpp" />
     <ClInclude Include="Satellite.hpp" />
-    <ClInclude Include="SatelliteTrack.hpp" />
-    <ClInclude Include="SatTrackInterface.hpp" />
     <ClInclude Include="TleData.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
