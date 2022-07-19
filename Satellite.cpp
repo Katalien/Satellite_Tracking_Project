@@ -1,10 +1,10 @@
 #include "Satellite.hpp"
 
 double radiansToDegrees(double x) {
-	return (x * 180 / 3.14);
+	return (x * 180 / 3.14159265359);
 }
 
-Satellite::Satellite(string info, string name) : name(name) {
+Satellite::Satellite(string const& info, string const& name) : name(name) {
 	string str1 = info.substr(0, 25);
 	string str2 = info.substr(26, 69);
 	string str3 = info.substr(97, 69);
@@ -22,8 +22,8 @@ void Satellite::UpdateData() {
 	info.localTime = info.time.AddHours(3.0);
 	CoordTopocentric topo = obs.GetLookAngle(eci);
 	CoordGeodetic geo = eci.ToGeodetic();
-    info.azimuth = radiansToDegrees(topo.azimuth);
-    info.elevation = radiansToDegrees(topo.elevation);
+    info.azimuth = (int)radiansToDegrees(topo.azimuth);
+    info.elevation = (int)radiansToDegrees(topo.elevation);
     info.longtitude = radiansToDegrees(geo.longitude);
     info.latitude = radiansToDegrees(geo.latitude);
     info.altitude = radiansToDegrees(geo.altitude);
@@ -32,10 +32,10 @@ void Satellite::UpdateData() {
 };
 
 double Satellite::FindMaxElevation(
-    const CoordGeodetic& user_geo,
+    CoordGeodetic const& user_geo,
     SGP4& sgp4,
-    const DateTime& aos,
-    const DateTime& los)
+    DateTime const& aos,
+    DateTime const& los)
 {
     Observer obs(user_geo);
 
@@ -186,7 +186,7 @@ DateTime Satellite::FindCrossingPoint(
 }
 
 
-void Satellite::UpdatePassDetails(const CoordGeodetic& user_geo,
+void Satellite::UpdatePassDetails( CoordGeodetic const& user_geo,
     SGP4& sgp4,
     const DateTime& start_time,
     const DateTime& end_time,
@@ -233,7 +233,7 @@ void Satellite::UpdatePassDetails(const CoordGeodetic& user_geo,
             current_time,
             false);
 
-        struct PassDetails pd;
+        PassDetails pd;
         passInfo.aos = aos_time;
         passInfo.los = los_time;
         passInfo.max_elevation = FindMaxElevation(
@@ -367,11 +367,10 @@ void Satellite::CreatePassList(
 
 void Satellite:: WriteScheduleIFile() {
     string path = "../sat_documentation/" + name + ".txt";
-    /*string path = name + ".txt"; */
     ofstream file;
     file.open(path);
 
-    list<struct PassDetails>::const_iterator itr = pass_list.begin();
+    auto itr = pass_list.cbegin();
     do {
         file << "AOS: " << itr->aos.AddHours(3.0)
             << ", LOS: " << itr->los.AddHours(3.0)
@@ -383,11 +382,11 @@ void Satellite:: WriteScheduleIFile() {
 }
 
 
-void Satellite::WriteScheduleIFile(string filename) {
+void Satellite::WriteScheduleIFile(string const& filename) {
     ofstream file;
     file.open(filename);
 
-    list<struct PassDetails>::const_iterator itr = pass_list.begin();
+    auto itr = pass_list.cbegin();
     do {
         file << "AOS: " << itr->aos.AddHours(3.0)
             << ", LOS: " << itr->los.AddHours(3.0)
@@ -399,7 +398,7 @@ void Satellite::WriteScheduleIFile(string filename) {
 }
 
 
-void Satellite::CreateSchedule(int numOfDays) {
+void Satellite::CreateSchedule(int const& numOfDays) {
     DateTime start_date = DateTime::Now(true);
     DateTime end_date(start_date.AddDays((double)numOfDays));
     CoordGeodetic geo(site_latitude, site_longtitude, site_altitude);
@@ -412,10 +411,5 @@ void Satellite::CreateSchedule(int numOfDays) {
 
 bool Satellite::IsVisible(){
     UpdateData();
-    if (info.azimuth >= 0 && info.elevation >= 0) {
-        return true;
-    }
-    else {
-        return false;
-    }
+    return info.azimuth >= 0 && info.elevation >= 0;
 }

@@ -4,8 +4,6 @@
 #include <vector>
 #include <memory>
 
-
-
 #include <boost/program_options.hpp>
 #include "SatTrackInterface.hpp"
 #include "ComPort.hpp"
@@ -32,12 +30,13 @@ namespace po = boost::program_options;
  //перепроверьте данные
 
 
+
+
 int main(int argc, char* argv[]) {
-	//for (int i = 0; i < argc; i++) {
-	//	cout << argv[i] << endl;
-	//}
+
 	shared_ptr<Program> program = make_shared<Program>(argc, argv);
 	program->Run();
+
 	
 	return 0;
 }

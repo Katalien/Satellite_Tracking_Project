@@ -17,6 +17,7 @@ public:
 	void PrintCurrentAngles();
 	int GetAzimuth();
 	int GetElevation();
+	~ComPort() { ClosePort(); };
 
 private:
 	HANDLE hSerial;

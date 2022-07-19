@@ -42,16 +42,16 @@ public:
 class Satellite {
 public:
 	Satellite() {};
-	Satellite(const string info, string name);
+	Satellite( string const& info, string const& name);
 
 
 	const Tle& GetTle() const { return *tle; };
 	const string GetName() const { return name; }
 	void UpdateData();
 
-	void CreateSchedule(int numOfDays);
+	void CreateSchedule(int const& numOfDays);
 	void WriteScheduleIFile();
-	void WriteScheduleIFile(string filename);
+	void WriteScheduleIFile(string const& filename);
 
 	int GetAzimuth() const { return info.azimuth; };
 	int GetElevation() const { return info.elevation; }
@@ -67,8 +67,8 @@ public:
 	DateTime GetLos() const { return passInfo.los; };
 	double GetMaxElevation() const { return passInfo.max_elevation; };
 
-	void UpdatePassInfo(DateTime t1) {
-		if (pass_list.empty() == true) {
+	void UpdatePassInfo(DateTime const& t1) {
+		if (pass_list.empty()) {
 			CreateSchedule(1);
 		}
 		list<PassDetails>::const_iterator it = pass_list.begin();
@@ -102,17 +102,17 @@ private:
 		const int time_step);
 
 	void CreatePassList(
-		const CoordGeodetic& user_geo,
+		CoordGeodetic const& user_geo,
 		SGP4& sgp4,
-		const DateTime& start_time,
-		const DateTime& end_time,
+		DateTime const& start_time,
+		DateTime const& end_time,
 		const int time_step);
 
 	double FindMaxElevation(
-		const CoordGeodetic& user_geo,
+		CoordGeodetic const& user_geo,
 		SGP4& sgp4,
-		const DateTime& aos,
-		const DateTime& los);
+		DateTime const& aos,
+		DateTime const& los);
 
 
 	DateTime FindCrossingPoint(

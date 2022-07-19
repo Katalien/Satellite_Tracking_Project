@@ -24,7 +24,8 @@ public:
 		while (1) {
 			sat->UpdateData();
 			if (!sat->IsVisible()) {
-			//	cout << sat->GetAzimuth() << " " << sat->GetElevation() << endl;
+				port->TurnOnAngles(sat->GetAzimuth(), 0);
+				cout << sat->GetAzimuth() << " " << sat->GetElevation() << endl;
 				return;
 			}
 		

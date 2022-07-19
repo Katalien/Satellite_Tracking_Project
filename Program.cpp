@@ -81,20 +81,20 @@ void Program::AutoTracking(const shared_ptr<SatTrackInterface>& track) {
 
 	while (true) { // while: check in one day
 		currentTime = DateTime::Now();
-		for (auto s : satList) {
+		for (auto &s : satList) {
 			s->UpdateData();
 			s->UpdatePassInfo(currentTime);
 		}
 
-		for (auto sat : satList) {
-			if (sat->IsVisible() == true) {
+		for (auto &sat : satList) {
+			if (sat->IsVisible()) {
 				visibleSatList.push_back(sat);
 			}
 		}
 
 		currentSat = (visibleSatList.size() == 0 ? NextSat(satList) : MaxElevationSat(satList));
 
-		if (currentSat->IsVisible() == false) {
+		if (!currentSat->IsVisible()) {
 			currentSat->UpdateData();
 			track->antenna->Move(currentSat->GetAzimuth(), 0);
 			cout << "No Satellites right now" << endl;
@@ -108,14 +108,7 @@ void Program::AutoTracking(const shared_ptr<SatTrackInterface>& track) {
 	}
 }
 
-shared_ptr<Satellite> Program::CompareElevation(const shared_ptr<Satellite>& s1, const shared_ptr<Satellite>& s2) {
-	if (s1->GetMaxElevation() >= s2->GetMaxElevation()) {
-		return s1;
-	}
-	else {
-		return s2;
-	}
-}
+
 
 shared_ptr<Satellite> Program::MaxElevationSat(const vector<shared_ptr<Satellite>>& satList) {
 	/*shared_ptr<Satellite> maxElSat = satList.at(0);

@@ -51,6 +51,7 @@ void ComPort::SetConnectionParams() {
 void ComPort::ClosePort() {
     if (hSerial != INVALID_HANDLE_VALUE) {
         CloseHandle(hSerial);
+        hSerial = INVALID_HANDLE_VALUE;
     }
 }
 
@@ -135,6 +136,7 @@ int ComPort::ToAngle(char* data) {
     if (data[1] != ' ') {
         return ConvertCharToInt(data[1]) * 100 + ConvertCharToInt(data[2]) * 10 + ConvertCharToInt(data[3]);
     }
+    return -1;
 }
 
 /// <summary>

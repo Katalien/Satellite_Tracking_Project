@@ -40,13 +40,12 @@ public:
 			string info;
 			try {
 				info = tle->GetSatelliteData(name);
+				satellites.emplace_back(make_shared<Satellite>(info, name));
 			}
 			catch (const std::exception& ex) {
-				cout << "Check the entered data" << endl;
+				cout << "Check the entered data " << ex.what() << endl;
 				exit(-1);
 			}
-			satellites.emplace_back(make_shared<Satellite>(info, name));
-			
 		}
 	};
 
@@ -60,17 +59,18 @@ public:
 			exit(-1);
 		}		
 		antenna = make_shared<Antenna>(port);
-	}
-
-	void CheckAntennaConnection() {
 		try {
-			antenna->UpdateCurrentAngles();
+			CheckAntennaConnection();
 		}
 		catch (const std::exception& ex) {
 			cout << ex.what() << endl;
 			cout << "No connection to antenna" << endl;
 			exit(-1);
 		}
+	}
+
+	void CheckAntennaConnection() {	
+     //it works even if 
 	}
 
 	vector<shared_ptr <Satellite>> GetSatellites() { return satellites; }

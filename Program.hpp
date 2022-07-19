@@ -11,7 +11,7 @@ namespace po = boost::program_options;
 
 class Program {
 public:
-	Program() {};
+
 	Program(int argc, char** argv);
 	void Run();
 	po::variables_map ReadCmdLine(int argc, char** argv);
@@ -26,5 +26,4 @@ private:
 	po::options_description desc{ "Options" };
 	shared_ptr<Satellite> NextSat(const vector<shared_ptr<Satellite>>& satArray);
 	shared_ptr<Satellite> MaxElevationSat(const vector<shared_ptr<Satellite>>& satList);
-	shared_ptr<Satellite> CompareElevation(const shared_ptr<Satellite>& s1, const shared_ptr<Satellite>& s2);
 };
