@@ -12,55 +12,53 @@ class Satellite;
 
 class Antenna {
 public:
-	Antenna() {};
+	Antenna() = default;
 	Antenna(shared_ptr<ComPort> port) : port(port) {};
 
-	void TrackSatellite(shared_ptr<Satellite> sat) {
-		Handle handle;
-		handle.OpenNewFile(sat->GetName());
-		
-		sat->UpdateData();
-		int second = sat->GetTime().Second();
-		while (1) {
-			sat->UpdateData();
-			if (!sat->IsVisible()) {
-				port->TurnOnAngles(sat->GetAzimuth(), 0);
-				cout << sat->GetAzimuth() << " " << sat->GetElevation() << endl;
-				return;
-			}
-		
-			port->TurnOnAngles(sat->GetAzimuth(), sat->GetElevation());
-			handle.WriteFile(sat->GetLocalTime(), sat->GetAzimuth(), sat->GetElevation());
-			UpdateCurrentAngles();
-			// for check
-			cout << sat->GetTime() << endl;
-			cout << "Sat: Az: " << sat->GetAzimuth() << " El: " << sat->GetElevation() << endl;
-			cout << "Ant: Az: " << azimuth << " El: " << elevation << endl;
-			Sleep(1000);
-		}
-		handle.CloseFile();
-	};
+	void TrackSatellite(shared_ptr<Satellite> sat);
 
 	int GetAzimuth() { return azimuth; }
 	int GetElevation() { return elevation; };
 
-	void UpdateCurrentAngles() {
-		elevation = port->GetElevation();
-		azimuth = port->GetAzimuth();
-	}
+	void UpdateCurrentAngles();
 
 
-	void Park() {
-		port->TurnOnAngles(0, 0);
-	}
+	void Park() { port->TurnOnAngles(0, 0); }
 
-	void Move(int az, int el) {
-		cout << az << endl;
-		port->TurnOnAngles(az, el);
-	}
+	void Move(int az, int el) { port->TurnOnAngles(az, el); }
 
 private:
 	int azimuth = 0;
 	int elevation = 0;
 	shared_ptr<ComPort> port;
+	bool parked = false;
+	shared_ptr<Satellite> currentSat = nullptr;
+
+	// на запад
+	int ParkAzimuthToWest(int const& aosAz, int const& losAz);
+
+	// на восток
+	int ParkAzimuthToEast(int const& aosAz, int const& losAz);
+
+
+
+	bool IsWaiting();
+
+	int AntennaParkAzimuth();
+
+	// «апомни наконец, что west это запад....
+	bool DelayToWest(int const& aosAz, int const& losAz);
+
+	bool DelayToEast(int const& aosAz, int const& losAz);
+
+	bool AzimuthIsInreasing();
+
+	bool CrossSiteLongtitude();
+
+	bool CrossZero();
+
+	bool NeedToConvertAngle();
+
+	int ConvertAngle(int angle);
+
 };

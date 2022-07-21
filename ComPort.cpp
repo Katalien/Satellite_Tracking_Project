@@ -76,7 +76,10 @@ void ComPort::ReadCOM() {
     DWORD iSize;
     char sReceivedChar;
     while (true) {
-        ReadFile(hSerial, &sReceivedChar, 1, &iSize, 0);  // получаем 1 байт
+        if (!ReadFile(hSerial, &sReceivedChar, 1, &iSize, 0)) { // получаем 1 байт
+            cout << "Impossible to read data from port" << endl;
+            exit(-1);
+        }  
         if (sReceivedChar == '\n') {
             break;
         }
@@ -100,7 +103,10 @@ int ComPort::ReadOneAngle() {
     char data[4];
     int i = 0;
     while (true) {
-        ReadFile(hSerial, &sReceivedChar, 1, &iSize, 0);  // получаем 1 байт
+        if (!ReadFile(hSerial, &sReceivedChar, 1, &iSize, 0)) { // получаем 1 байт
+            cout << "Impossible to get data from port" << endl;
+            exit(-1);
+        }  
         if (sReceivedChar == '\r') {
             continue;
         }
@@ -130,7 +136,6 @@ int ComPort::ToAngle(char* data) {
         return ConvertCharToInt(data[3]);
     }
     if (data[1] == ' ') {
-        int a = ConvertCharToInt(data[2]) * 10 + ConvertCharToInt(data[3]);
         return  ConvertCharToInt(data[2]) * 10 + ConvertCharToInt(data[3]);
     }
     if (data[1] != ' ') {
@@ -159,7 +164,13 @@ void ComPort::TurnOnAngles(int azimuth, int elevation) {
 void ComPort::PrintCurrentAngles() {
     char* command = portCommand.GetAnglesCommand();
     GiveCommand(command);
-    ReadCOM();
+    try {
+        ReadCOM();
+    }
+    catch (const std::exception& ex) {
+        cout << "error in getting data from port " << ex.what() << endl;
+        exit(-1);
+    }
 }
 
 /// <summary>

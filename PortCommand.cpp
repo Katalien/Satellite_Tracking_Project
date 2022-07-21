@@ -10,7 +10,7 @@ using namespace std;
 using std::vector;
 
 char* PortCommand::TurnAnglesCommand(int azimuth_d, int elevation_d) {
-	if (azimuth_d < 0 || elevation_d < 0 || azimuth_d > 360 || elevation_d > 180) {
+	if (azimuth_d < 0 || elevation_d < 0 || azimuth_d > 450 || elevation_d > 180) { 
 		cout << "Invalid angles" << endl;
 		return nullptr;
 	}

@@ -20,7 +20,7 @@ public:
 	~ComPort() { ClosePort(); };
 
 private:
-	HANDLE hSerial;
+	HANDLE hSerial{};
 	LPCTSTR portName;
 	PortCommand portCommand;
 

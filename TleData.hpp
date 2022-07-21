@@ -36,14 +36,12 @@ public:
     string GetSatelliteData(string name) {
         size_t pos = tleData.find(name);
         if (pos == string::npos) {
-            throw exception("the satellite doesn't exist"); 
-            return "";
+            throw exception("The satellite doesn't exist\n"); 
         }
-        int nameSize = name.size();
         string info_tmp = tleData.substr(pos, 168);
         size_t pos_info = info_tmp.find("\n");
         string info = info_tmp.substr(pos_info + 1, 141);
-        return info_tmp;
+        return info;
     }
 
     void PrintTle() { cout << tleData << endl; };

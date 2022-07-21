@@ -43,7 +43,7 @@ public:
 				satellites.emplace_back(make_shared<Satellite>(info, name));
 			}
 			catch (const std::exception& ex) {
-				cout << "Check the entered data " << ex.what() << endl;
+				cout <<  ex.what() << " Check the entered data " << endl;
 				exit(-1);
 			}
 		}

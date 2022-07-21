@@ -11,7 +11,7 @@ namespace po = boost::program_options;
 
 class Program {
 public:
-
+	Program() = default;
 	Program(int argc, char** argv);
 	void Run();
 	po::variables_map ReadCmdLine(int argc, char** argv);

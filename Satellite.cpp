@@ -1,39 +1,86 @@
 #include "Satellite.hpp"
+#include <limits>
 
-double radiansToDegrees(double x) {
+using std::string;
+
+double Satellite::radiansToDegrees(double x) {
 	return (x * 180 / 3.14159265359);
 }
 
 Satellite::Satellite(string const& info, string const& name) : name(name) {
-	string str1 = info.substr(0, 25);
-	string str2 = info.substr(26, 69);
-	string str3 = info.substr(97, 69);
+    site = { site_latitude, site_longtitude, site_altitude };
+    obs.SetLocation(site); /*= { site_latitude, site_longtitude, site_altitude }; */
+    std::string addTab(25 - name.size(), ' ');
+	string str1 = name + addTab;
+	string str2 = info.substr(0, 69);
+	string str3 = info.substr(71, 69);
     tle = make_shared<Tle>(str1, str2, str3);
     UpdateData();
+    DefineDirection();
 }
 
 
 void Satellite::UpdateData() {
-	Observer obs(site_latitude, site_longtitude, site_altitude); // 
-	CoordGeodetic site(site_latitude, site_longtitude, site_altitude);
+
 	info.time = GetTle().Epoch().Now();
 	SGP4 sgp4(GetTle());
 	Eci eci = sgp4.FindPosition(info.time);
 	info.localTime = info.time.AddHours(3.0);
 	CoordTopocentric topo = obs.GetLookAngle(eci);
 	CoordGeodetic geo = eci.ToGeodetic();
+    FillInfo(topo, geo);
+};
+
+void Satellite::UpdatePassInfo(DateTime const& t1) {
+    if (pass_list.empty()) {
+        cout << "New schedule was created" << endl;
+        CreateSchedule(1);
+    }
+    list<PassDetails>::const_iterator it = pass_list.begin();
+    while (t1 >= it->los) {
+        cout << t1 << endl << it->los << endl;
+        pass_list.pop_front();
+        it = pass_list.begin();
+    }
+    passInfo.aos = it->aos;
+    passInfo.los = it->los;
+    passInfo.max_elevation = it->max_elevation;
+}
+
+void Satellite::FillInfo(CoordTopocentric const& topo, CoordGeodetic const& geo) {
     info.azimuth = (int)radiansToDegrees(topo.azimuth);
     info.elevation = (int)radiansToDegrees(topo.elevation);
-    info.longtitude = radiansToDegrees(geo.longitude);
+    info.longitude = radiansToDegrees(geo.longitude);
     info.latitude = radiansToDegrees(geo.latitude);
     info.altitude = radiansToDegrees(geo.altitude);
-   // cout << topo.azimuth << " " << topo.elevation << endl;
-    //cout << info.azimuth << " " << info.elevation << endl;
-};
+}
+
+// дублироавние кода - вынести часть в отдельную функцию
+double Satellite::GetAzimuthByTime(DateTime const& time) {
+
+    CoordGeodetic site(site_latitude, site_longtitude, site_altitude);
+    // здесь нужна проверка, что данные заполнены
+    SGP4 sgp4(GetTle());
+    Eci eci = sgp4.FindPosition(time);
+    CoordTopocentric topo = obs.GetLookAngle(eci);
+    return radiansToDegrees(topo.azimuth);
+}
+
+double Satellite::GetLongitudeByTime(DateTime const& time) {
+
+    CoordGeodetic site(site_latitude, site_longtitude, site_altitude);
+    // здесь нужна проверка, что данные заполнены
+    SGP4 sgp4(GetTle());
+    Eci eci = sgp4.FindPosition(time);
+    CoordTopocentric topo = obs.GetLookAngle(eci);
+    CoordGeodetic geo = eci.ToGeodetic();
+    return radiansToDegrees(geo.longitude);
+}
+
 
 double Satellite::FindMaxElevation(
     CoordGeodetic const& user_geo,
-    SGP4& sgp4,
+    SGP4 const& sgp4,
     DateTime const& aos,
     DateTime const& los)
 {
@@ -51,7 +98,8 @@ double Satellite::FindMaxElevation(
 
     do {
         running = true;
-        max_elevation = -99999999999999.0;
+        //max_elevation = -99999999999999.0;
+        max_elevation = (-1) * std::numeric_limits<double>::infinity();
         while (running && current_time < time2) {
             /*
              * find position
@@ -106,7 +154,7 @@ double Satellite::FindMaxElevation(
 
 DateTime Satellite::FindCrossingPoint(
     const CoordGeodetic& user_geo,
-    SGP4& sgp4,
+    SGP4 const& sgp4,
     const DateTime& initial_time1,
     const DateTime& initial_time2,
     bool finding_aos)
@@ -187,7 +235,7 @@ DateTime Satellite::FindCrossingPoint(
 
 
 void Satellite::UpdatePassDetails( CoordGeodetic const& user_geo,
-    SGP4& sgp4,
+    SGP4 const& sgp4,
     const DateTime& start_time,
     const DateTime& end_time,
     const int time_step)
@@ -247,7 +295,7 @@ void Satellite::UpdatePassDetails( CoordGeodetic const& user_geo,
 
 void Satellite::CreatePassList(
     const CoordGeodetic& user_geo,
-    SGP4& sgp4,
+    SGP4 const& sgp4,
     const DateTime& start_time,
     const DateTime& end_time,
     const int time_step)
@@ -366,7 +414,7 @@ void Satellite::CreatePassList(
 }
 
 void Satellite:: WriteScheduleIFile() {
-    string path = "../sat_documentation/" + name + ".txt";
+    string path = "../sat_documentation/schedule_" + name + ".txt";
     ofstream file;
     file.open(path);
 
@@ -405,11 +453,26 @@ void Satellite::CreateSchedule(int const& numOfDays) {
     SGP4 sgp4(GetTle());
     CreatePassList(geo, sgp4, start_date, end_date, 180);
     if (pass_list.begin() == pass_list.end()) {
-        std::cout << "No passes found" << std::endl;
+        throw exception("No passes found");
     }
 }
 
 bool Satellite::IsVisible(){
     UpdateData();
     return info.azimuth >= 0 && info.elevation >= 0;
+}
+
+void Satellite::DefineDirection() {
+    double first = GetLongtitude();
+    Sleep(1000);
+    UpdateData();
+    double second = GetLongtitude();
+    dir = first > second ? Direction::west : Direction::east;
+}
+
+DateTime Satellite::GetHalfTime() {
+    int end = GetLos().Minute();
+    int start = GetAos().Minute();
+    int half = (end - start) / 2 % 60;
+    return GetAos().AddMinutes(half);
 }

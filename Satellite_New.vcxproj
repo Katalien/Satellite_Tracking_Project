@@ -150,11 +150,11 @@
     <ClInclude Include="PortCommand.hpp" />
     <ClInclude Include="Program.hpp" />
     <ClInclude Include="Satellite.hpp" />
-    <ClInclude Include="SatelliteTrack.hpp" />
     <ClInclude Include="SatTrackInterface.hpp" />
     <ClInclude Include="TleData.hpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Antenna.cpp" />
     <ClCompile Include="ComPort.cpp" />
     <ClCompile Include="Handle.cpp" />
     <ClCompile Include="libsgp4\CoordGeodetic.cc" />

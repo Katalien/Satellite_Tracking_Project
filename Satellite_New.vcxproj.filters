@@ -30,9 +30,6 @@
     <ClInclude Include="Satellite.hpp">
       <Filter>Файлы ресурсов</Filter>
     </ClInclude>
-    <ClInclude Include="SatelliteTrack.hpp">
-      <Filter>Файлы ресурсов</Filter>
-    </ClInclude>
     <ClInclude Include="TleData.hpp">
       <Filter>Файлы ресурсов</Filter>
     </ClInclude>
@@ -104,13 +101,16 @@
     <ClCompile Include="test.cpp">
       <Filter>Файлы ресурсов</Filter>
     </ClCompile>
-    <ClCompile Include="User.cpp">
-      <Filter>Файлы ресурсов</Filter>
-    </ClCompile>
     <ClCompile Include="Satellite.cpp">
       <Filter>Файлы ресурсов</Filter>
     </ClCompile>
     <ClCompile Include="Program.cpp">
+      <Filter>Файлы ресурсов</Filter>
+    </ClCompile>
+    <ClCompile Include="User.cpp">
+      <Filter>Файлы ресурсов</Filter>
+    </ClCompile>
+    <ClCompile Include="Antenna.cpp">
       <Filter>Файлы ресурсов</Filter>
     </ClCompile>
   </ItemGroup>
