@@ -19,6 +19,16 @@ Satellite::Satellite(string const& info, string const& name) : name(name) {
     DefineDirection();
 }
 
+void Satellite::UpdateData(DateTime _time) {
+
+    info.time = _time;
+    SGP4 sgp4(GetTle());
+    Eci eci = sgp4.FindPosition(info.time);
+    info.localTime = info.time.AddHours(3.0);
+    CoordTopocentric topo = obs.GetLookAngle(eci);
+    CoordGeodetic geo = eci.ToGeodetic();
+    FillInfo(topo, geo);
+};
 
 void Satellite::UpdateData() {
 
@@ -38,7 +48,6 @@ void Satellite::UpdatePassInfo(DateTime const& t1) {
     }
     list<PassDetails>::const_iterator it = pass_list.begin();
     while (t1 >= it->los) {
-        cout << t1 << endl << it->los << endl;
         pass_list.pop_front();
         it = pass_list.begin();
     }
@@ -421,7 +430,9 @@ void Satellite:: WriteScheduleIFile() {
     auto itr = pass_list.cbegin();
     do {
         file << "AOS: " << itr->aos.AddHours(3.0)
+            << " AosAz: " << GetAzimuthByTime(itr->aos)
             << ", LOS: " << itr->los.AddHours(3.0)
+            << " LosAz: " << GetAzimuthByTime(itr->los)
             << ", Max El: " << std::setw(4) << Util::RadiansToDegrees(itr->max_elevation)
             << ", Duration: " << (itr->los - itr->aos)
             << std::endl << std::endl;
@@ -455,6 +466,11 @@ void Satellite::CreateSchedule(int const& numOfDays) {
     if (pass_list.begin() == pass_list.end()) {
         throw exception("No passes found");
     }
+}
+
+bool Satellite::IsVisible(DateTime _time) {
+    UpdateData(_time);
+    return info.azimuth >= 0 && info.elevation >= 0;
 }
 
 bool Satellite::IsVisible(){

@@ -72,29 +72,43 @@ void Program::AutoTracking(const shared_ptr<SatTrackInterface>& track) {
 	vector<shared_ptr<Satellite>> satList = track->GetSatellites();
 	vector<shared_ptr<Satellite>> visibleSatList;
 	currentSat = nullptr;
+	string path = "order.txt";
+	ofstream file;
+	file.open(path);
 	while (true) {
 		currentTime = DateTime::Now();
-		for (auto& s : satList) {
-			s->UpdateData();
-			s->UpdatePassInfo(currentTime);
-		}
-
-		for (auto& sat : satList) {
-			if (sat->IsVisible()) {
-				visibleSatList.push_back(sat);
-			}
-		}
-
 		if (!currentSat) {
-			currentSat = (visibleSatList.size() == 0 ? NextSat(satList) : MaxElevationSat(satList));
+			for (auto& s : satList) {
+				s->UpdateData();
+				s->UpdatePassInfo(currentTime);
+				cout << s->GetName() << " Aos : " << s->ToLocalTime(s->GetAos()) << " Los : " << s->ToLocalTime(s->GetAos()) << endl;
+			}
+
+			for (auto& sat : satList) {
+				if (sat->IsVisible()) {
+					visibleSatList.push_back(sat);
+				}
+			}
+			currentSat = (visibleSatList.size() == 0 ? NextSat(satList) : MaxElevationSat(visibleSatList));
+			cout << "Next satellite is " << currentSat->GetName() << " Aos " << currentSat->ToLocalTime(currentSat->GetAos()) << endl;
+			
 		}
-		cout << "Next satellite is " << currentSat->GetName() << " Aos " << currentSat->ToLocalTime(currentSat->GetAos()) << endl;
+		file << " Next Satellite is : " << currentSat->GetName() << " Aos " << currentSat->ToLocalTime(currentSat->GetAos()) << " " << currentSat->GetAzimuthByTime(currentSat->GetAos()) << endl;
 		
 		// set antenna in necessary position for waiting next satellite
 		track->antenna->TrackSatellite(currentSat);
 		track->antenna->UpdateCurrentAngles();
 		cout << track->antenna->GetAzimuth() << " " << track->antenna->GetElevation() << endl << endl;
-		currentSat = nullptr;
+		cout << "Next satellite is " << currentSat->GetName() << " Aos " << currentSat->ToLocalTime(currentSat->GetAos()) << endl;
+	
+		currentTime = DateTime::Now();
+
+		if (currentTime >= currentSat->GetLos()) {
+			cout << "curSat is Over" << endl;
+			cout << endl << endl << currentTime << endl;
+			currentSat = nullptr;		
+			visibleSatList.clear();
+		}
 	}
 }
 
@@ -104,6 +118,8 @@ void Program::Track(const shared_ptr<SatTrackInterface>& track) {
 	while (1) {
 		satTrack->UpdateData();
 		track->antenna->TrackSatellite(satTrack);
+		track->antenna->UpdateCurrentAngles();
+		cout << track->antenna->GetAzimuth() << endl;
 	}
 }
 
@@ -167,6 +183,7 @@ shared_ptr<Satellite> Program::MaxElevationSat(const vector<shared_ptr<Satellite
 		maxElSat = CompareElevation(maxElSat, satList.at(i));
 	}*/
 	//
+	//cout << "max elevation" << endl;
 	auto maxElevationSat = std::max_element(satList.begin(), satList.end(), 
 		[] (shared_ptr<Satellite> const &sat_a, 
 			shared_ptr<Satellite> const &sat_b) -> bool
@@ -188,6 +205,7 @@ shared_ptr<Satellite> Program::NextSat(const vector<shared_ptr<Satellite>>& satL
 	//	}
 	//}
 	//return current;
+	//cout << "next sat" << endl;
 	auto nextSat = min_element(satList.begin(), satList.end(),
 		[](shared_ptr<Satellite> const& sat_first, shared_ptr<Satellite> const& sat_second) 
 		{

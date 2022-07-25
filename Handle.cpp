@@ -67,6 +67,13 @@ void Handle::WriteFile(DateTime time, int azimuth, int elevation) {
     else { cout << "file is not open" << endl; }
 }
 
+void Handle::WriteFile(DateTime time, int azimuth, int elevation, int antAz, int antEl) {
+    if (file.is_open()) {
+        file << time << " " << " Az: " << azimuth << " El: " << elevation << endl << " AAz: " << antAz << " AEl " << antEl << endl;
+    }
+    else { cout << "file is not open" << endl; }
+}
+
 void Handle::CloseFile() {
     file.close();
 }

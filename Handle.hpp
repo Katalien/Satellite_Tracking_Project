@@ -28,6 +28,8 @@ public:
 
     void WriteFile(DateTime time, int azimuth, int elevation);
 
+    void WriteFile(DateTime time, int azimuth, int elevation, int antAz, int antEl);
+
     void CloseFile();
 
 private:

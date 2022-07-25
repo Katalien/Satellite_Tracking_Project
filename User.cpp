@@ -33,29 +33,6 @@ namespace po = boost::program_options;
 // нужна проверка, что спутник пересекает 0..... как? не знаю .... рассмаривать разное нправление движения вверх вниз,
 
 
-bool AzimuthIsInreasing(shared_ptr<Satellite> currentSat) {
-	double azFirst = currentSat->GetAzimuthByTime(currentSat->GetAos());
-	double azSecond = currentSat->GetAzimuthByTime(currentSat->GetAos().AddMinutes(1.0));
-	return azFirst < azSecond;
-}
-
-bool CrossSiteLongtitude(shared_ptr<Satellite> currentSat) {
-	double aosLong = currentSat->GetLongitudeByTime(currentSat->GetAos());
-	double losLong = currentSat->GetLongitudeByTime(currentSat->GetLos());
-	double siteLong = currentSat->radiansToDegrees(currentSat->GetSiteInfo().GetLocation().longitude);
-	return (siteLong > losLong && siteLong < aosLong) || (siteLong < losLong&& siteLong > losLong);
-}
-
-bool CrossZero(shared_ptr<Satellite> currentSat) {
-	//на запад
-	if (currentSat->GetDirection() == Direction::west) {
-		return (currentSat->GetLos() > currentSat->GetAos()) && !AzimuthIsInreasing(currentSat) && CrossSiteLongtitude(currentSat);
-	}
-	//на восток
-	if (currentSat->GetDirection() == Direction::east) {
-		return (currentSat->GetAos() > currentSat->GetLos()) && AzimuthIsInreasing(currentSat) && CrossSiteLongtitude(currentSat);
-	}
-}
 
 
 int main(int argc, char* argv[]) {

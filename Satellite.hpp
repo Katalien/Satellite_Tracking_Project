@@ -54,6 +54,7 @@ public:
 	const Tle& GetTle() const { return *tle; };
 	const string GetName() const { return name; }
 	void UpdateData();
+	void UpdateData(DateTime _time);
 
 	void CreateSchedule(int const& numOfDays);
 	void WriteScheduleIFile();
@@ -68,6 +69,7 @@ public:
 	DateTime GetLocalTime() const { return info.localTime; };
 
 	bool IsVisible();
+	bool IsVisible(DateTime _time);
 
 	DateTime GetAos() const { return passInfo.aos; };
 	DateTime GetLos() const { return passInfo.los; };

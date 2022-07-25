@@ -2,9 +2,13 @@
 using namespace std;
 
 void Antenna::TrackSatellite(shared_ptr<Satellite> sat) {
-	Handle handle;
-	handle.OpenNewFile(sat->GetName());
-	int azimuth = 0, elevation = 0;
+	//Handle handle;
+	string path =   sat->GetName() + ".txt";
+	ofstream file;
+	// string path = name + "txt";
+	file.open(path);
+	//handle.OpenNewFile(sat->GetName());
+	int curAzimuth = 0, curElevation = 0;
 	currentSat = sat;
 	bool wait = false;
 
@@ -16,36 +20,45 @@ void Antenna::TrackSatellite(shared_ptr<Satellite> sat) {
 		if (!currentSat->IsVisible()) {
 			if (!parked) {
 				port->TurnOnAngles(AntennaParkAzimuth(), 0);
+				cout << AntennaParkAzimuth();
 				parked = true;
 			}
+			//handle.WriteFile(sat->GetAos(), AntennaParkAzimuth(), 0);
+			file << "Sat " << currentSat->GetAzimuthByTime(currentSat->GetAos()) << " Ant: " << AntennaParkAzimuth() << endl;
 			return;
 		}
 
 		if (IsWaiting() && sat->GetAzimuth() > AntennaParkAzimuth()) {
-			cout << "Need to wait" << endl;
+			cout << "Need to wait " << endl;
+			file << "Need to wait" << endl;
 			return;
 		}
 
 		if (NeedToConvertAngle()) {
 			if (sat->GetAzimuth() > 0 && sat->GetAzimuth() < 90) {
-				azimuth = ConvertAngle(sat->GetAzimuth());
+				curAzimuth = ConvertAngle(sat->GetAzimuth());
+				file << "Convert angles " << endl;
+				file << sat->GetAzimuth() << " " << curAzimuth;
+				cout << "Convert angles " << endl;
+				cout  << sat->GetAzimuth() << " " << curAzimuth;
 			}
 		}
 		else {
-			azimuth = sat->GetAzimuth();
+			curAzimuth = sat->GetAzimuth();
 		}
-		elevation = sat->GetElevation();
-		port->TurnOnAngles(azimuth, elevation);
-		handle.WriteFile(sat->GetLocalTime(), sat->GetAzimuth(), sat->GetElevation());
+		curElevation = sat->GetElevation();
+		port->TurnOnAngles(curAzimuth, curElevation);
 		UpdateCurrentAngles();
+		//handle.WriteFile(sat->GetLocalTime(), sat->GetAzimuth(), sat->GetElevation(), GetAzimuth(), GetElevation());
+		file  << time << endl << " Az: " << sat->GetAzimuth() << " El: " << sat->GetElevation() << endl << " AAz: " << GetAzimuth() << " AEl " << GetElevation() << endl;;
 		// for check
-		cout << sat->GetTime() << endl;
+		cout << sat->ToLocalTime(sat->GetTime()) << endl;
 		cout << sat->GetName() << endl;
 		cout << "Sat: Az: " << sat->GetAzimuth() << " El: " << sat->GetElevation() << endl;
 		cout << "Ant: Az: " << azimuth << " El: " << elevation << endl;
 		Sleep(1000);
 	}
-	handle.CloseFile();
+	//handle.CloseFile();
 }
 
 void Antenna::UpdateCurrentAngles() {
@@ -60,7 +73,7 @@ int Antenna::ParkAzimuthToWest(int const& aosAz, int const& losAz) {
 		cout << "doesn't cross zero point" << endl;
 		return aosAz;
 	}
-	cout << "cross zero" << endl;
+
 	if (aosAz < 90) {
 		return 360 + aosAz;   // no delay, need to convert angles
 	}
@@ -114,7 +127,7 @@ bool Antenna::IsWaiting() {
 int Antenna::AntennaParkAzimuth() {
 	int aosAz = currentSat->GetAzimuthByTime(currentSat->GetAos());
 	int losAz = currentSat->GetAzimuthByTime(currentSat->GetLos());
-	cout << aosAz << " " << losAz << endl;
+	cout <<"Aos Az : " <<  aosAz << " Los Az : " << losAz << endl;
 	if (currentSat->GetDirection() == Direction::west) { return ParkAzimuthToWest(aosAz, losAz); }
 	if (currentSat->GetDirection() == Direction::east) { return ParkAzimuthToEast(aosAz, losAz); }
 	else {
