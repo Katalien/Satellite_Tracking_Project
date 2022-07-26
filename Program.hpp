@@ -12,10 +12,10 @@ namespace po = boost::program_options;
 class Program {
 public:
 	Program() = default;
-	Program(int argc, char** argv);
+	Program(int const& argc, char** argv);
 	void Run();
-	po::variables_map ReadCmdLine(int argc, char** argv);
-	void Predict(const shared_ptr<SatTrackInterface> track, int days);
+	po::variables_map ReadCmdLine(int const& argc, char** argv);
+	void Predict(const shared_ptr<SatTrackInterface> track, int const& days);
 	void Track(const shared_ptr<SatTrackInterface>& track);
 	void AutoTracking(const shared_ptr<SatTrackInterface>& track);
 

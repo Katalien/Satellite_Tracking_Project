@@ -25,8 +25,8 @@ class TrackInfo {
 public:
 	DateTime time;
 	DateTime localTime;
-	int azimuth = 0;
-	int elevation = 0;
+	double azimuth = 0;
+	double elevation = 0;
 	double longitude = 0.0;
 	double latitude = 0.0;
 	double altitude= 0.0;
@@ -54,14 +54,13 @@ public:
 	const Tle& GetTle() const { return *tle; };
 	const string GetName() const { return name; }
 	void UpdateData();
-	void UpdateData(DateTime _time);
 
 	void CreateSchedule(int const& numOfDays);
 	void WriteScheduleIFile();
 	void WriteScheduleIFile(string const& filename);
 
-	int GetAzimuth() const { return info.azimuth; };
-	int GetElevation() const { return info.elevation; }
+	double GetAzimuth() const { return info.azimuth; };
+	double GetElevation() const { return info.elevation; }
 	double GetAltitude() const { return info.altitude; }
 	double GetLongtitude() const { return info.longitude; }
 	double GetLatitude() const { return info.latitude; }
@@ -69,7 +68,6 @@ public:
 	DateTime GetLocalTime() const { return info.localTime; };
 
 	bool IsVisible();
-	bool IsVisible(DateTime _time);
 
 	DateTime GetAos() const { return passInfo.aos; };
 	DateTime GetLos() const { return passInfo.los; };
@@ -129,6 +127,4 @@ private:
 		bool finding_aos);
 
 	void DefineDirection();
-	void FillInfo(CoordTopocentric const& topo, CoordGeodetic const& geo);
-
 };

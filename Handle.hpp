@@ -20,15 +20,15 @@ class Handle {
 public:
     string GetTleData();
 
-    string GetSatelliteData(string tleData);
+    string GetSatelliteData(string const& tleData);
 
-    void OpenNewFile(string name);
+    void OpenNewFile(string const& name, DateTime const& time);
 
-    void WriteFile( string data);
+    void WriteFile(string const& data);
 
-    void WriteFile(DateTime time, int azimuth, int elevation);
+    void WriteFile(DateTime const& time, int const& azimuth, int const& elevation);
 
-    void WriteFile(DateTime time, int azimuth, int elevation, int antAz, int antEl);
+    void WriteFile(DateTime const& time, int const& azimuth, int const& elevation, int const& antAz, int const& antEl);
 
     void CloseFile();
 

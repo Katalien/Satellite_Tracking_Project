@@ -24,12 +24,6 @@
     <ClInclude Include="Handle.hpp">
       <Filter>Файлы ресурсов</Filter>
     </ClInclude>
-    <ClInclude Include="PortCommand.hpp">
-      <Filter>Файлы ресурсов</Filter>
-    </ClInclude>
-    <ClInclude Include="Satellite.hpp">
-      <Filter>Файлы ресурсов</Filter>
-    </ClInclude>
     <ClInclude Include="TleData.hpp">
       <Filter>Файлы ресурсов</Filter>
     </ClInclude>
@@ -39,12 +33,12 @@
     <ClInclude Include="Program.hpp">
       <Filter>Файлы ресурсов</Filter>
     </ClInclude>
+    <ClInclude Include="Satellite.hpp">
+      <Filter>Файлы ресурсов</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ComPort.cpp">
-      <Filter>Файлы ресурсов</Filter>
-    </ClCompile>
-    <ClCompile Include="master.cpp">
       <Filter>Файлы ресурсов</Filter>
     </ClCompile>
     <ClCompile Include="libsgp4\CoordGeodetic.cc">
@@ -95,15 +89,6 @@
     <ClCompile Include="Handle.cpp">
       <Filter>Файлы ресурсов</Filter>
     </ClCompile>
-    <ClCompile Include="PortCommand.cpp">
-      <Filter>Файлы ресурсов</Filter>
-    </ClCompile>
-    <ClCompile Include="test.cpp">
-      <Filter>Файлы ресурсов</Filter>
-    </ClCompile>
-    <ClCompile Include="Satellite.cpp">
-      <Filter>Файлы ресурсов</Filter>
-    </ClCompile>
     <ClCompile Include="Program.cpp">
       <Filter>Файлы ресурсов</Filter>
     </ClCompile>
@@ -111,6 +96,15 @@
       <Filter>Файлы ресурсов</Filter>
     </ClCompile>
     <ClCompile Include="Antenna.cpp">
+      <Filter>Файлы ресурсов</Filter>
+    </ClCompile>
+    <ClCompile Include="SatTrackInterface.cpp">
+      <Filter>Файлы ресурсов</Filter>
+    </ClCompile>
+    <ClCompile Include="TleData.cpp">
+      <Filter>Файлы ресурсов</Filter>
+    </ClCompile>
+    <ClCompile Include="Satellite.cpp">
       <Filter>Файлы ресурсов</Filter>
     </ClCompile>
   </ItemGroup>

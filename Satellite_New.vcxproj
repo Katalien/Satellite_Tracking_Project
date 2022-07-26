@@ -147,7 +147,6 @@
     <ClInclude Include="Antenna.hpp" />
     <ClInclude Include="ComPort.hpp" />
     <ClInclude Include="Handle.hpp" />
-    <ClInclude Include="PortCommand.hpp" />
     <ClInclude Include="Program.hpp" />
     <ClInclude Include="Satellite.hpp" />
     <ClInclude Include="SatTrackInterface.hpp" />
@@ -172,11 +171,10 @@
     <ClCompile Include="libsgp4\Tle.cc" />
     <ClCompile Include="libsgp4\TleException.cc" />
     <ClCompile Include="libsgp4\Vector.cc" />
-    <ClCompile Include="master.cpp" />
-    <ClCompile Include="PortCommand.cpp" />
     <ClCompile Include="Program.cpp" />
     <ClCompile Include="Satellite.cpp" />
-    <ClCompile Include="test.cpp" />
+    <ClCompile Include="SatTrackInterface.cpp" />
+    <ClCompile Include="TleData.cpp" />
     <ClCompile Include="User.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

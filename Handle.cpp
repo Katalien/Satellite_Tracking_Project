@@ -1,8 +1,6 @@
 #pragma once
 #include "Handle.hpp"
 
-
-
 /// <summary>
 /// Get all Tle data about active satellites 
 /// </summary>
@@ -29,12 +27,12 @@ string Handle::GetTleData() {
 /// </summary>
 /// <param name="name"> Satelite name</param>
 /// <returns>String with tle data of specific satellite</returns>
-string Handle::GetSatelliteData(string name) {
+string Handle::GetSatelliteData(string const& name) {
     string dataString = GetTleData();
     size_t pos = dataString.find(name);
     if (pos == string::npos) {
         cout << "the satellite doesn't exist" << endl << endl;
-        return nullptr;
+        return "";
     }
     int nameSize = name.size();
     string info_tmp = dataString.substr(pos, 168);
@@ -48,26 +46,29 @@ size_t Handle::DataToString(void* contents, size_t size, size_t nmemb, void* use
     return size * nmemb;
 }
 
-void Handle::OpenNewFile(string name) {
-    string path = "../sat_documentation/" + name + ".txt";
-   // string path = name + "txt";
+void Handle::OpenNewFile(string const& name, DateTime const& time) {
+    int day = time.Day();
+    int month = time.Month();
+    int hour = time.Hour();
+    int minute = time.Minute();
+    string path = "../sat_documentation/" + name + "_time_" + to_string(hour) + "h_" + to_string(minute) + "min" + ".txt";
     file.open(path);
 }
 
-void Handle::WriteFile( string data ) {
+void Handle::WriteFile(string const& data ) {
     if (file.is_open()) {
         file << data << endl;
     }
 }
 
-void Handle::WriteFile(DateTime time, int azimuth, int elevation) {
+void Handle::WriteFile(DateTime const& time, int const& azimuth, int const& elevation) {
     if (file.is_open()) {
         file << time << " " << " Az: " << azimuth << " El: " << elevation << endl;
     }
     else { cout << "file is not open" << endl; }
 }
 
-void Handle::WriteFile(DateTime time, int azimuth, int elevation, int antAz, int antEl) {
+void Handle::WriteFile(DateTime const& time, int const& azimuth, int const& elevation, int const& antAz, int const& antEl) {
     if (file.is_open()) {
         file << time << " " << " Az: " << azimuth << " El: " << elevation << endl << " AAz: " << antAz << " AEl " << antEl << endl;
     }

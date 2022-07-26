@@ -1,7 +1,6 @@
 #pragma once
 #include <iostream>
 #include <windows.h>
-#include "PortCommand.hpp"
 
 using namespace std;
 
@@ -11,9 +10,9 @@ public:
 	ComPort(LPCTSTR portName) : portName(portName) {};
 	void GetConnection();
 	void ClosePort();
-	void GiveCommand(char* com);
+	void GiveCommand(string const& com);
 	void ReadCOM();
-	void TurnOnAngles(int azimuth, int elevation);
+	void TurnOnAngles(double azimuth, double elevation);
 	void PrintCurrentAngles();
 	int GetAzimuth();
 	int GetElevation();
@@ -22,9 +21,10 @@ public:
 private:
 	HANDLE hSerial{};
 	LPCTSTR portName;
-	PortCommand portCommand;
 
 	void SetConnectionParams();  // default
 	int ReadOneAngle();
 	int ToAngle(char* data);
+	string MakeTurnCommand(int const& az, int const& el);
+	string MakeAngle(int x);
 };

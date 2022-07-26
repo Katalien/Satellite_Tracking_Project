@@ -1,6 +1,7 @@
 #pragma once
 #include <iostream>
 #include <windows.h>
+#include<string>
 #include "ComPort.hpp"
 
 #define MAX_COM_SIZE 8;
@@ -14,10 +15,8 @@ void ComPort::GetConnection() {
     hSerial = ::CreateFile(portName, GENERIC_READ | GENERIC_WRITE, 0, 0, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0);
     if (hSerial == INVALID_HANDLE_VALUE) {
         if (GetLastError() == ERROR_FILE_NOT_FOUND) {
-            //cout << "serial port does not exist.\n";
             throw exception("serial port does not exist.\n");
         }
-        //cout << "some other error occurred." << endl << " Error: " << GetLastError();
         throw exception("some other error occurred.\n");
     }
     else {
@@ -40,8 +39,8 @@ void ComPort::SetConnectionParams() {
     dcbSerialParams.StopBits = ONESTOPBIT;
     dcbSerialParams.Parity = NOPARITY;
     if (!SetCommState(hSerial, &dcbSerialParams)) {
-        cout << "error setting serial port state\n";
-        //assert(SetCommState(hSerial, &dcbSerialParams));
+        throw exception("error setting serial port state");
+        exit(-1);
     }
 }
 
@@ -59,13 +58,14 @@ void ComPort::ClosePort() {
 /// Send command to the port
 /// </summary>
 /// <param name="com"> Command in form of array of chars </param>
-void ComPort::GiveCommand(char* com) {
+void ComPort::GiveCommand(string const& com) {
     DWORD dwSize = MAX_COM_SIZE;
     DWORD dwBytesWritten;
 
-    BOOL iRet = WriteFile(hSerial, com, dwSize, &dwBytesWritten, NULL);
+    BOOL iRet = WriteFile(hSerial, com.c_str(), dwSize, &dwBytesWritten, NULL);
     if (!iRet) {
-        cout << "Error in giving command" << endl;
+        throw exception("error in giving command");
+        exit(-1);
     }
 }
 
@@ -118,8 +118,7 @@ int ComPort::ReadOneAngle() {
         }
 
     }
-    int a = ToAngle(data);
-    return a;
+    return ToAngle(data);
 }
 
 int ConvertCharToInt(char x) {
@@ -144,25 +143,37 @@ int ComPort::ToAngle(char* data) {
     return -1;
 }
 
-/// <summary>
-/// Give command to turn on necessary angles
-/// </summary>
-/// <param name="azimuth"> Azimuth angle</param>
-/// <param name="elevation"> Elevation angle</param>
-void ComPort::TurnOnAngles(int azimuth, int elevation) {
-    char* command = portCommand.TurnAnglesCommand(azimuth, elevation);
-    if (command == nullptr) {
+string ComPort::MakeTurnCommand(int const& az, int const& el) {
+    string azStr = MakeAngle(az);
+    string elStr = MakeAngle(el);
+    return "W" + azStr + " " + elStr;
+}
+
+string ComPort::MakeAngle(int x) {
+    string str = to_string(x);
+    if (x == 0) {
+        return "000";
+    }
+    if (x < 100 && x != 0) {
+        return "0" + str;
+    }
+    return str;
+}
+
+void ComPort::TurnOnAngles(double azimuth, double elevation) {
+    string command = MakeTurnCommand((int)azimuth, (int)elevation);
+    if (command == "") {
         return;
     }
     GiveCommand(command);
-    delete(command);
 }
 
 /// <summary>
 /// Send command and print angles in form as they are given by port
 /// </summary>
 void ComPort::PrintCurrentAngles() {
-    char* command = portCommand.GetAnglesCommand();
+    //char* command = portCommand.GetAnglesCommand();
+    string command = "C2";
     GiveCommand(command);
     try {
         ReadCOM();
@@ -178,7 +189,7 @@ void ComPort::PrintCurrentAngles() {
 /// </summary>
 /// <returns></returns>
 int ComPort::GetAzimuth() {
-    char command[] = "C";
+    string command = "C";
     GiveCommand(command);
     return ReadOneAngle();
 }
@@ -189,7 +200,7 @@ int ComPort::GetAzimuth() {
 /// </summary>
 /// <returns></returns>
 int ComPort::GetElevation() {
-    char command[] = "B";
+    string command = "B";
     GiveCommand(command);
     return ReadOneAngle();
 }

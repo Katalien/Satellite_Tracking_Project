@@ -9,7 +9,7 @@ double Satellite::radiansToDegrees(double x) {
 
 Satellite::Satellite(string const& info, string const& name) : name(name) {
     site = { site_latitude, site_longtitude, site_altitude };
-    obs.SetLocation(site); /*= { site_latitude, site_longtitude, site_altitude }; */
+    obs.SetLocation(site);
     std::string addTab(25 - name.size(), ' ');
 	string str1 = name + addTab;
 	string str2 = info.substr(0, 69);
@@ -19,31 +19,22 @@ Satellite::Satellite(string const& info, string const& name) : name(name) {
     DefineDirection();
 }
 
-void Satellite::UpdateData(DateTime _time) {
-
-    info.time = _time;
-    SGP4 sgp4(GetTle());
-    Eci eci = sgp4.FindPosition(info.time);
-    info.localTime = info.time.AddHours(3.0);
-    CoordTopocentric topo = obs.GetLookAngle(eci);
-    CoordGeodetic geo = eci.ToGeodetic();
-    FillInfo(topo, geo);
-};
-
 void Satellite::UpdateData() {
-
 	info.time = GetTle().Epoch().Now();
 	SGP4 sgp4(GetTle());
 	Eci eci = sgp4.FindPosition(info.time);
 	info.localTime = info.time.AddHours(3.0);
 	CoordTopocentric topo = obs.GetLookAngle(eci);
 	CoordGeodetic geo = eci.ToGeodetic();
-    FillInfo(topo, geo);
+    info.azimuth = radiansToDegrees(topo.azimuth);
+    info.elevation = radiansToDegrees(topo.elevation);
+    info.longitude = radiansToDegrees(geo.longitude);
+    info.latitude = radiansToDegrees(geo.latitude);
+    info.altitude = radiansToDegrees(geo.altitude);
 };
 
 void Satellite::UpdatePassInfo(DateTime const& t1) {
     if (pass_list.empty()) {
-        cout << "New schedule was created" << endl;
         CreateSchedule(1);
     }
     list<PassDetails>::const_iterator it = pass_list.begin();
@@ -56,18 +47,8 @@ void Satellite::UpdatePassInfo(DateTime const& t1) {
     passInfo.max_elevation = it->max_elevation;
 }
 
-void Satellite::FillInfo(CoordTopocentric const& topo, CoordGeodetic const& geo) {
-    info.azimuth = (int)radiansToDegrees(topo.azimuth);
-    info.elevation = (int)radiansToDegrees(topo.elevation);
-    info.longitude = radiansToDegrees(geo.longitude);
-    info.latitude = radiansToDegrees(geo.latitude);
-    info.altitude = radiansToDegrees(geo.altitude);
-}
-
 // дублироавние кода - вынести часть в отдельную функцию
 double Satellite::GetAzimuthByTime(DateTime const& time) {
-
-    CoordGeodetic site(site_latitude, site_longtitude, site_altitude);
     // здесь нужна проверка, что данные заполнены
     SGP4 sgp4(GetTle());
     Eci eci = sgp4.FindPosition(time);
@@ -76,9 +57,6 @@ double Satellite::GetAzimuthByTime(DateTime const& time) {
 }
 
 double Satellite::GetLongitudeByTime(DateTime const& time) {
-
-    CoordGeodetic site(site_latitude, site_longtitude, site_altitude);
-    // здесь нужна проверка, что данные заполнены
     SGP4 sgp4(GetTle());
     Eci eci = sgp4.FindPosition(time);
     CoordTopocentric topo = obs.GetLookAngle(eci);
@@ -466,11 +444,6 @@ void Satellite::CreateSchedule(int const& numOfDays) {
     if (pass_list.begin() == pass_list.end()) {
         throw exception("No passes found");
     }
-}
-
-bool Satellite::IsVisible(DateTime _time) {
-    UpdateData(_time);
-    return info.azimuth >= 0 && info.elevation >= 0;
 }
 
 bool Satellite::IsVisible(){

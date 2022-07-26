@@ -9,7 +9,7 @@
 // make function DoesCrossZero
 
 
-Program::Program(int argc, char** argv) : argc(argc), argv(argv) {
+Program::Program(int const& argc, char** argv) : argc(argc), argv(argv) {
 	desc.add_options()
 		("satName", po::value<vector<string>>(&params), "Name of satellite")
 		("days", po::value<int>()->default_value(3), "Amount of days for prediction")
@@ -44,7 +44,7 @@ void Program::Run() {
 	}
 }
 
-po::variables_map Program::ReadCmdLine(int argc, char** argv) {
+po::variables_map Program::ReadCmdLine(int const& argc, char** argv) {
 	po::variables_map vm;
 
 	// parse arguments
@@ -98,8 +98,8 @@ void Program::AutoTracking(const shared_ptr<SatTrackInterface>& track) {
 		// set antenna in necessary position for waiting next satellite
 		track->antenna->TrackSatellite(currentSat);
 		track->antenna->UpdateCurrentAngles();
-		cout << track->antenna->GetAzimuth() << " " << track->antenna->GetElevation() << endl << endl;
-		cout << "Next satellite is " << currentSat->GetName() << " Aos " << currentSat->ToLocalTime(currentSat->GetAos()) << endl;
+		cout << "ant az : " << track->antenna->GetAzimuth() << " ant el : " << track->antenna->GetElevation() << endl << endl;
+		//cout << "Next satellite is " << currentSat->GetName() << " Aos " << currentSat->ToLocalTime(currentSat->GetAos()) << endl;
 	
 		currentTime = DateTime::Now();
 
@@ -116,14 +116,11 @@ void Program::Track(const shared_ptr<SatTrackInterface>& track) {
 	vector<shared_ptr<Satellite>> satList = track->GetSatellites();
 	shared_ptr<Satellite> satTrack = track->GetSatellite();
 	while (1) {
-		satTrack->UpdateData();
 		track->antenna->TrackSatellite(satTrack);
-		track->antenna->UpdateCurrentAngles();
-		cout << track->antenna->GetAzimuth() << endl;
 	}
 }
 
-void Program::Predict(const shared_ptr<SatTrackInterface> track, int days) {
+void Program::Predict(const shared_ptr<SatTrackInterface> track, int const& days) {
 	vector<shared_ptr<Satellite>> satList = track->GetSatellites();
 	for (auto sat : satList) {
 		try {
