@@ -48,7 +48,7 @@ enum class Direction {
 class Satellite {
 public:
 	Satellite() = default;
-	Satellite( string const& info, string const& name);
+	Satellite( string const& info, string const& name, double siteLat, double siteLong, int timeSpan);
 
 
 	const Tle& getTle() const { return *tle; };
@@ -82,7 +82,7 @@ public:
 	double getLongitudeByTime(DateTime const& time);
 	Observer getSiteInfo() { return site; };
 	double radiansToDegrees(double x);
-	DateTime toLocalTime(DateTime time) { return time.AddHours(3.0); }
+	DateTime toLocalTime(DateTime time) { return time.AddHours((double)timeSpan); }
 
 private:
 	const string name;
@@ -90,6 +90,7 @@ private:
 	TrackInfo info;
 	CoordGeodetic site{ 0, 0, 0 };
 	Observer obs{0, 0, 0};
+	int timeSpan;
 
 	list<class PassDetails> passList;
 

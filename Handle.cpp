@@ -46,6 +46,11 @@ size_t Handle::dataToString(void* contents, size_t size, size_t nmemb, void* use
     return size * nmemb;
 }
 
+/// <summary>
+/// Open file. The name is the name of the satellite and its AOS time
+/// </summary>
+/// <param name="name"> name of the satellite </param>
+/// <param name="time"> Aos time of the satellite </param>
 void Handle::openNewFile(string const& name, DateTime const& time) {
     int day = time.Day();
     int month = time.Month();
@@ -55,12 +60,22 @@ void Handle::openNewFile(string const& name, DateTime const& time) {
     file.open(path);
 }
 
+/// <summary>
+/// Write data in file
+/// </summary>
+/// <param name="data"> Data to write in the form of string </param>
 void Handle::writeFile(string const& data ) {
     if (file.is_open()) {
         file << data << endl;
     }
 }
 
+/// <summary>
+/// Write data about the satellite position at the moment: azimuth and elevation
+/// </summary>
+/// <param name="time"> current time </param>
+/// <param name="azimuth"> current azimuth </param>
+/// <param name="elevation"> current azimuth </param>
 void Handle::writeFile(DateTime const& time, int const& azimuth, int const& elevation) {
     if (file.is_open()) {
         file << time << " " << " Az: " << azimuth << " El: " << elevation << endl;
@@ -68,13 +83,9 @@ void Handle::writeFile(DateTime const& time, int const& azimuth, int const& elev
     else { cout << "file is not open" << endl; }
 }
 
-void Handle::writeFile(DateTime const& time, int const& azimuth, int const& elevation, int const& antAz, int const& antEl) {
-    if (file.is_open()) {
-        file << time << " " << " Az: " << azimuth << " El: " << elevation << endl << " AAz: " << antAz << " AEl " << antEl << endl;
-    }
-    else { cout << "file is not open" << endl; }
-}
-
+/// <summary>
+/// Close file
+/// </summary>
 void Handle::closeFile() {
     file.close();
 }

@@ -29,6 +29,7 @@ public:
 private:
 	int azimuth = 0;
 	int elevation = 0;
+	bool waitingState = true;
 	shared_ptr<ComPort> port;
 	shared_ptr<Satellite> currentSat = nullptr;
 
@@ -36,15 +37,15 @@ private:
 
 	int parkAzimuthToEast(int const& aosAz, int const& losAz);
 
-	bool isWaiting();
+	bool isWaiting() const;
 
 	int antennaParkAzimuth();
 
-	bool delayToWest(int const& aosAz, int const& losAz);
+	bool delayToWest(int const& aosAz, int const& losAz) const;
 
-	bool delayToEast(int const& aosAz, int const& losAz);
+	bool delayToEast(int const& aosAz, int const& losAz) const;
 
-	bool azimuthIsInreasing();
+	bool azimuthIsInreasing() const;
 
 	bool crossSiteLongtitude();
 
@@ -52,5 +53,5 @@ private:
 
 	bool needToConvertAngle();
 
-	int convertAngle(int const& angle);
+	int convertAngle(int const& angle) const;
 };

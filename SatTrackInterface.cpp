@@ -52,4 +52,10 @@ shared_ptr<Satellite> SatTrackInterface::getSatellite() const {
 /// <param name="name"> The name of the satellite </param>
 /// <returns> Smart pointer to the satellite </returns>
 shared_ptr <Satellite> SatTrackInterface::getSatelliteByName(string const& name) const {
-	for (auto& sat : satellit
+	for (auto& sat : satellites) {
+		if (sat->getName() == name) {
+			return sat;
+		}
+	}
+	return nullptr;
+}

@@ -12,12 +12,12 @@ using namespace std;
 /// Connect to the COM port
 /// </summary>
 void ComPort::getConnection() {
-    hSerial = ::CreateFile(portName, GENERIC_READ | GENERIC_WRITE, 0, 0, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0);
+    hSerial = ::CreateFile(portName.c_str(), GENERIC_READ | GENERIC_WRITE, 0, 0, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0);
     if (hSerial == INVALID_HANDLE_VALUE) {
         if (GetLastError() == ERROR_FILE_NOT_FOUND) {
             throw exception("serial port does not exist.\n");
         }
-        throw exception("some other error occurred.\n");
+        throw exception("serial port. some error occurred.\n");
     }
     else {
         cout << "Connected" << endl;
@@ -96,7 +96,7 @@ void ComPort::readCOM() {
 /// <summary>
 /// Get one angle from COM port
 /// </summary>
-/// <returns></returns>
+/// <returns>Get angle from the port</returns>
 int ComPort::readOneAngle() {
     DWORD iSize;
     char sReceivedChar;
@@ -143,12 +143,23 @@ int ComPort::toAngle(char* data) {
     return -1;
 }
 
+/// <summary>
+/// Make string for the port command to get both angles
+/// </summary>
+/// <param name="az">azimuth</param>
+/// <param name="el">elevation</param>
+/// <returns>Command in the form of string for the port</returns>
 string ComPort::makeTurnCommand(int const& az, int const& el) {
     string azStr = makeAngle(az);
     string elStr = makeAngle(el);
     return "W" + azStr + " " + elStr;
 }
 
+/// <summary>
+/// Convert integer angle to string for the port command
+/// </summary>
+/// <param name="x"></param>
+/// <returns>Angle in the form of the string</returns>
 string ComPort::makeAngle(int x) {
     string str = to_string(x);
     if (x == 0) {
@@ -160,6 +171,11 @@ string ComPort::makeAngle(int x) {
     return str;
 }
 
+/// <summary>
+/// Give command to the port to turn at the specified angles
+/// </summary>
+/// <param name="azimuth">azimuth angle</param>
+/// <param name="elevation">elevation angle</param>
 void ComPort::turnOnAngles(double azimuth, double elevation) {
     string command = makeTurnCommand((int)azimuth, (int)elevation);
     if (command == "") {

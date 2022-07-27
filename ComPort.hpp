@@ -7,7 +7,7 @@ using namespace std;
 class ComPort {
 public:
 	ComPort() { portName = L"COM3"; }; // default
-	ComPort(LPCTSTR portName) : portName(portName) {};
+	ComPort(wstring portName) : portName(portName) {};
 	void getConnection();
 	void closePort();
 	void giveCommand(string const& com);
@@ -20,7 +20,7 @@ public:
 
 private:
 	HANDLE hSerial{};
-	LPCTSTR portName;
+	wstring portName;
 
 	void setConnectionParams();  // default
 	int readOneAngle();

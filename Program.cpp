@@ -1,14 +1,10 @@
 #include "Program.hpp"
 
-// it depends on the direction of satellite movement + 
-// the same algorithm, but different functions? std::function? - different logic & comparison
-// store the direction in class Satellite? count it? +
-// ChangeAngle function to convert 0, 1... to 360, 361... with check ? 
-
-//function Antenna parkingAzimuth - to Antenna class?
-// make function DoesCrossZero
-
-
+/// <summary>
+/// User's options
+/// </summary>
+/// <param name="argc"></param>
+/// <param name="argv"></param>
 Program::Program(int const& argc, char** argv) : argc(argc), argv(argv) {
 	desc.add_options()
 		("satName", po::value<vector<string>>(&params), "Name of satellite")
@@ -16,9 +12,15 @@ Program::Program(int const& argc, char** argv) : argc(argc), argv(argv) {
 		("predict", "Create schedule for satellite")
 		("track", "track one satellite")
 		("autoTrack", "track several satellites in turn")
+		("longtitude", po::value<double>()->default_value(30.37428867), "longtitude of the view point")
+		("latitude", po::value<double>()->default_value(60.0075085), "latitude of the view point")
+		("timeZone", po::value<int>()->default_value(3), "time zone")
 		("help", "Show options");
 }
 
+/// <summary>
+/// run the program with certain user's command (predict, track, autoTrack or help) 
+/// </summary>
 void Program::run() {
 
 	po::variables_map vm = readCmdLine(argc, argv);
@@ -28,7 +30,7 @@ void Program::run() {
 		return;
 	}
 
-	shared_ptr<SatTrackInterface> trackSat = make_shared< SatTrackInterface>(params);
+	shared_ptr<SatTrackInterface> trackSat = make_shared< SatTrackInterface>(params, vm["latitude"].as<double>(), vm["longtitude"].as<double>(), vm["timeZone"].as<int>());
 
 	if (vm.count("predict")) {
 		int days = vm["days"].as<int>();
@@ -44,6 +46,12 @@ void Program::run() {
 	}
 }
 
+/// <summary>
+/// Process the parametrs of the command line
+/// </summary>
+/// <param name="argc"></param>
+/// <param name="argv"></param>
+/// <returns></returns>
 po::variables_map Program::readCmdLine(int const& argc, char** argv) {
 	po::variables_map vm;
 
@@ -64,7 +72,10 @@ po::variables_map Program::readCmdLine(int const& argc, char** argv) {
 }
 
 
-
+/// <summary>
+/// Tracking of several satellites with automatic switching betwen them
+/// </summary>
+/// <param name="track"> Pointer to the object of the SatTrackInterface class with all info about the satellites, the antenna and the port </param>
 void Program::autoTracking(const shared_ptr<SatTrackInterface>& track) {
 	DateTime currentTime = DateTime::Now();
 	shared_ptr<Satellite> currentSat = make_shared<Satellite>();
@@ -112,6 +123,10 @@ void Program::autoTracking(const shared_ptr<SatTrackInterface>& track) {
 	}
 }
 
+/// <summary>
+/// Track one satellite. If it is out of view - wait fo it
+/// </summary>
+/// <param name="track"> Pointer to the object of the SatTrackInterface class with all info about the satellites, the antenna and the port </param>
 void Program::track(const shared_ptr<SatTrackInterface>& track) {
 	vector<shared_ptr<Satellite>> satList = track->getSatellites();
 	shared_ptr<Satellite> satTrack = track->getSatellite();
@@ -120,6 +135,11 @@ void Program::track(const shared_ptr<SatTrackInterface>& track) {
 	}
 }
 
+/// <summary>
+/// Make schedule gor the satellite and write it in the file
+/// </summary>
+/// <param name="track"> Pointer to the object of the SatTrackInterface class with all info about the satellites, the antenna and the port </param>
+/// <param name="days"> Amount of days for schedule </param>
 void Program::predict(const shared_ptr<SatTrackInterface> track, int const& days) {
 	vector<shared_ptr<Satellite>> satList = track->getSatellites();
 	for (auto sat : satList) {
@@ -134,53 +154,13 @@ void Program::predict(const shared_ptr<SatTrackInterface> track, int const& days
 		sat->writeScheduleIFile();
 	}
 }
-//
-//void Program::autoTracking(const shared_ptr<SatTrackInterface>& track) {
-//	DateTime currentTime = DateTime::Now();
-//	DateTime endTime = currentTime.AddDays(1);
-//	shared_ptr<Satellite> currentSat = make_shared<Satellite>();
-//
-//	vector<shared_ptr<Satellite>> satList = track->getSatellites();
-//	vector<shared_ptr<Satellite>> visibleSatList;
-//
-//	while (true) { // while: check in one day
-//		currentTime = DateTime::Now();
-//		for (auto &s : satList) {
-//			s->updateData();
-//			s->updatePassInfo(currentTime);
-//		}
-//
-//		for (auto &sat : satList) {
-//			if (sat->isVisible()) {
-//				visibleSatList.push_back(sat);
-//			}
-//		}
-//
-//		currentSat = (visibleSatList.size() == 0 ? nextSat(satList) : maxElevationSat(satList));
-//
-//		if (!currentSat->isVisible()) {
-//			currentSat->updateData();
-//			track->antenna->move(currentSat->getAzimuth(), 0);
-//			cout << "No Satellites right now" << endl;
-//			cout << "the next one is " << currentSat->getName() << endl;
-//
-//			continue;
-//		}
-//
-//		track->antenna->trackSatellite(currentSat);
-//		cout << "Next satellite is " << currentSat->getName() << " Aos " << currentSat->getAos() << endl;
-//	}
-//}
 
-
-
+/// <summary>
+/// Find the satellite with the maximum elevation in the ealiest appearance
+/// </summary>
+/// <param name="satList"> vector of the pointers to the satellites </param>
+/// <returns> The satellite with the max elevation </returns>
 shared_ptr<Satellite> Program::maxElevationSat(const vector<shared_ptr<Satellite>>& satList) {
-	/*shared_ptr<Satellite> maxElSat = satList.at(0);
-	for (int i = 1; i < satList.size(); ++i) {
-		maxElSat = CompareElevation(maxElSat, satList.at(i));
-	}*/
-	//
-	//cout << "max elevation" << endl;
 	auto maxElevationSat = std::max_element(satList.begin(), satList.end(), 
 		[] (shared_ptr<Satellite> const &sat_a, 
 			shared_ptr<Satellite> const &sat_b) -> bool
@@ -190,19 +170,12 @@ shared_ptr<Satellite> Program::maxElevationSat(const vector<shared_ptr<Satellite
 	return *maxElevationSat;
 }
 
-// return next satellite
+/// <summary>
+/// Choose the satellite to track further. Choose the earliest one or one with the max elevation
+/// </summary>
+/// <param name="satList"> vector of the pointers to the satellites </param>
+/// <returns> Smart pointer to the next tracking satellite </returns>
 shared_ptr<Satellite> Program::nextSat(const vector<shared_ptr<Satellite>>& satList) {
-	//shared_ptr<Satellite> current = satArray.at(0);
-	//for (int i = 1; i < satArray.size(); ++i) {
-	//	if (current->getAos() > satArray.at(i)->getAos()) {
-	//		current = satArray.at(i);
-	//	}
-	//	if (current->getAos() == satArray.at(i)->getAos()) {
-	//		current = CompareElevation(current, satArray.at(i));
-	//	}
-	//}
-	//return current;
-	//cout << "next sat" << endl;
 	auto nextSat = min_element(satList.begin(), satList.end(),
 		[](shared_ptr<Satellite> const& sat_first, shared_ptr<Satellite> const& sat_second) 
 		{

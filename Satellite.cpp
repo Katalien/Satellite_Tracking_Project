@@ -7,8 +7,8 @@ double Satellite::radiansToDegrees(double x) {
 	return (x * 180 / 3.14159265359);
 }
 
-Satellite::Satellite(string const& info, string const& name) : name(name) {
-    site = { site_latitude, site_longtitude, site_altitude };
+Satellite::Satellite(string const& info, string const& name, double siteLat, double siteLong, int timeSpan) : name(name), timeSpan(timeSpan) {
+    site = { siteLat, siteLong, 0 };
     obs.SetLocation(site);
     std::string addTab(25 - name.size(), ' ');
 	string str1 = name + addTab;
@@ -19,6 +19,9 @@ Satellite::Satellite(string const& info, string const& name) : name(name) {
     defineDirection();
 }
 
+/// <summary>
+/// Update current satellite data about its geo posotion and look angle
+/// </summary>
 void Satellite::updateData() {
 	info.time = getTle().Epoch().Now();
 	SGP4 sgp4(getTle());
@@ -33,6 +36,10 @@ void Satellite::updateData() {
     info.altitude = radiansToDegrees(geo.altitude);
 };
 
+/// <summary>
+/// Udpate structure with the info about earliest satellite's appearance: aos, los, max elevation
+/// </summary>
+/// <param name="t1"></param>
 void Satellite::updatePassInfo(DateTime const& t1) {
     if (passList.empty()) {
         createSchedule(1);
@@ -47,7 +54,11 @@ void Satellite::updatePassInfo(DateTime const& t1) {
     passInfo.max_elevation = it->max_elevation;
 }
 
-// дублироавние кода - вынести часть в отдельную функцию
+/// <summary>
+/// Get satellites azimuth in the specific time
+/// </summary>
+/// <param name="time"> UTC time in which it's needed to get azimuth angle</param>
+/// <returns></returns>
 double Satellite::getAzimuthByTime(DateTime const& time) {
     // здесь нужна проверка, что данные заполнены
     SGP4 sgp4(getTle());
@@ -56,6 +67,11 @@ double Satellite::getAzimuthByTime(DateTime const& time) {
     return radiansToDegrees(topo.azimuth);
 }
 
+/// <summary>
+/// Get satellites longtitude in the specific time
+/// </summary>
+/// <param name="time"> UTC time in which it's needed to get longtitude  </param>
+/// <returns></returns>
 double Satellite::getLongitudeByTime(DateTime const& time) {
     SGP4 sgp4(getTle());
     Eci eci = sgp4.FindPosition(time);
@@ -63,7 +79,6 @@ double Satellite::getLongitudeByTime(DateTime const& time) {
     CoordGeodetic geo = eci.ToGeodetic();
     return radiansToDegrees(geo.longitude);
 }
-
 
 double Satellite::findMaxElevation(
     CoordGeodetic const& user_geo,
@@ -400,6 +415,9 @@ void Satellite::createPassList(
     }
 }
 
+/// <summary>
+/// Write satellites schedule in file
+/// </summary>
 void Satellite:: writeScheduleIFile() {
     string path = "../sat_documentation/schedule_" + name + ".txt";
     ofstream file;
@@ -434,7 +452,10 @@ void Satellite::writeScheduleIFile(string const& filename) {
     file.close();
 }
 
-
+/// <summary>
+/// Make satellite's schedule 
+/// </summary>
+/// <param name="numOfDays"> Amount of days for schedule </param>
 void Satellite::createSchedule(int const& numOfDays) {
     DateTime start_date = DateTime::Now(true);
     DateTime end_date(start_date.AddDays((double)numOfDays));
@@ -446,11 +467,18 @@ void Satellite::createSchedule(int const& numOfDays) {
     }
 }
 
+/// <summary>
+/// Check if the satellite is visible now
+/// </summary>
+/// <returns></returns>
 bool Satellite::isVisible(){
     updateData();
     return info.azimuth >= 0 && info.elevation >= 0;
 }
 
+/// <summary>
+/// Define in which direction the satelite is moving
+/// </summary>
 void Satellite::defineDirection() {
     double first = getLongtitude();
     Sleep(1000);
@@ -459,6 +487,10 @@ void Satellite::defineDirection() {
     dir = first > second ? Direction::west : Direction::east;
 }
 
+/// <summary>
+/// Get the middle time moment of the satelite's earlies appearance
+/// </summary>
+/// <returns></returns>
 DateTime Satellite::GetHalfTime() {
     int end = getLos().Minute();
     int start = getAos().Minute();
