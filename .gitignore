@@ -1,10 +1,17 @@
 
+Debug/Vector.obj
+*.idb
+*.idb
+Debug/Util.obj
+Debug/TleException.obj
+Debug/Tle.obj
+Debug/TimeSpan.obj
+Debug/test.obj
+*.tlog
 Debug/com_command.obj
 Debug/com_connect.obj
-Debug/CoordGeodetic.obj
-Debug/DateTime.obj
-Debug/Globals.obj
+Debug/comport.obj.enc
 *.obj
-*.tlog
-*.recipe
-*.enc
+*.pdb
+*.idb
+Debug/vc142.idb
