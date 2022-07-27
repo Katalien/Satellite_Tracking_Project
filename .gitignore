@@ -1,4 +1,9 @@
 
+Debug/com_command.obj
+Debug/com_connect.obj
+Debug/CoordGeodetic.obj
+Debug/DateTime.obj
+Debug/Globals.obj
 *.obj
 *.tlog
 *.recipe
