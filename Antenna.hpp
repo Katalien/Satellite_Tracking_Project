@@ -15,16 +15,16 @@ public:
 	Antenna() = default;
 	Antenna(shared_ptr<ComPort> port) : port(port) {};
 
-	void TrackSatellite(shared_ptr<Satellite> sat);
+	void trackSatellite(shared_ptr<Satellite> sat);
 
-	int GetAzimuth() { return azimuth; }
-	int GetElevation() { return elevation; };
+	int getAzimuth() { return azimuth; }
+	int getElevation() { return elevation; };
 
-	void UpdateCurrentAngles();
+	void updateCurrentAngles();
 
-	void Park() { port->TurnOnAngles(0, 0); }
+	void park() { port->turnOnAngles(0, 0); }
 
-	void Move(int const& az, int const& el) { port->TurnOnAngles(az, el); }
+	void move(int const& az, int const& el) { port->turnOnAngles(az, el); }
 
 private:
 	int azimuth = 0;
@@ -32,25 +32,25 @@ private:
 	shared_ptr<ComPort> port;
 	shared_ptr<Satellite> currentSat = nullptr;
 
-	int ParkAzimuthToWest(int const& aosAz, int const& losAz);
+	int parkAzimuthToWest(int const& aosAz, int const& losAz);
 
-	int ParkAzimuthToEast(int const& aosAz, int const& losAz);
+	int parkAzimuthToEast(int const& aosAz, int const& losAz);
 
-	bool IsWaiting();
+	bool isWaiting();
 
-	int AntennaParkAzimuth();
+	int antennaParkAzimuth();
 
-	bool DelayToWest(int const& aosAz, int const& losAz);
+	bool delayToWest(int const& aosAz, int const& losAz);
 
-	bool DelayToEast(int const& aosAz, int const& losAz);
+	bool delayToEast(int const& aosAz, int const& losAz);
 
-	bool AzimuthIsInreasing();
+	bool azimuthIsInreasing();
 
-	bool CrossSiteLongtitude();
+	bool crossSiteLongtitude();
 
-	bool CrossZero();
+	bool crossZero();
 
-	bool NeedToConvertAngle();
+	bool needToConvertAngle();
 
-	int ConvertAngle(int const& angle);
+	int convertAngle(int const& angle);
 };

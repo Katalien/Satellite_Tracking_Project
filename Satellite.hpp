@@ -51,38 +51,38 @@ public:
 	Satellite( string const& info, string const& name);
 
 
-	const Tle& GetTle() const { return *tle; };
-	const string GetName() const { return name; }
-	void UpdateData();
+	const Tle& getTle() const { return *tle; };
+	const string getName() const { return name; }
+	void updateData();
 
-	void CreateSchedule(int const& numOfDays);
-	void WriteScheduleIFile();
-	void WriteScheduleIFile(string const& filename);
+	void createSchedule(int const& numOfDays);
+	void writeScheduleIFile();
+	void writeScheduleIFile(string const& filename);
 
-	double GetAzimuth() const { return info.azimuth; };
-	double GetElevation() const { return info.elevation; }
-	double GetAltitude() const { return info.altitude; }
-	double GetLongtitude() const { return info.longitude; }
-	double GetLatitude() const { return info.latitude; }
-	DateTime GetTime() const { return info.time; };
-	DateTime GetLocalTime() const { return info.localTime; };
+	double getAzimuth() const { return info.azimuth; };
+	double getElevation() const { return info.elevation; }
+	double getAltitude() const { return info.altitude; }
+	double getLongtitude() const { return info.longitude; }
+	double getLatitude() const { return info.latitude; }
+	DateTime getTime() const { return info.time; };
+	DateTime getLocalTime() const { return info.localTime; };
 
-	bool IsVisible();
+	bool isVisible();
 
-	DateTime GetAos() const { return passInfo.aos; };
-	DateTime GetLos() const { return passInfo.los; };
-	double GetMaxElevation() const { return passInfo.max_elevation; };
+	DateTime getAos() const { return passInfo.aos; };
+	DateTime getLos() const { return passInfo.los; };
+	double getMaxElevation() const { return passInfo.max_elevation; };
 
-	void UpdatePassInfo(DateTime const& t1);
+	void updatePassInfo(DateTime const& t1);
 
 	DateTime GetHalfTime();
 
-	double GetAzimuthByTime(DateTime const& time);
-	Direction GetDirection() { return dir; };
-	double GetLongitudeByTime(DateTime const& time);
-	Observer GetSiteInfo() { return site; };
+	double getAzimuthByTime(DateTime const& time);
+	Direction getDirection() { return dir; };
+	double getLongitudeByTime(DateTime const& time);
+	Observer getSiteInfo() { return site; };
 	double radiansToDegrees(double x);
-	DateTime ToLocalTime(DateTime time) { return time.AddHours(3.0); }
+	DateTime toLocalTime(DateTime time) { return time.AddHours(3.0); }
 
 private:
 	const string name;
@@ -91,7 +91,7 @@ private:
 	CoordGeodetic site{ 0, 0, 0 };
 	Observer obs{0, 0, 0};
 
-	list<class PassDetails> pass_list;
+	list<class PassDetails> passList;
 
 	PassDetails passInfo{0, 0, 0};
 
@@ -99,32 +99,32 @@ private:
 
 
 
-	void UpdatePassDetails(const CoordGeodetic& user_geo,
+	void updatePassDetails(const CoordGeodetic& user_geo,
 		SGP4 const& sgp4,
 		const DateTime& start_time,
 		const DateTime& end_time,
 		const int time_step);
 
-	void CreatePassList(
+	void createPassList(
 		CoordGeodetic const& user_geo,
 		SGP4 const& sgp4,
 		DateTime const& start_time,
 		DateTime const& end_time,
 		const int time_step);
 
-	double FindMaxElevation(
+	double findMaxElevation(
 		CoordGeodetic const& user_geo,
 		SGP4 const& sgp4,
 		DateTime const& aos,
 		DateTime const& los);
 
 
-	DateTime FindCrossingPoint(
+	DateTime findCrossingPoint(
 		const CoordGeodetic& user_geo,
 		SGP4 const& sgp4,
 		DateTime const& initial_time1,
 		DateTime const& initial_time2,
 		bool finding_aos);
 
-	void DefineDirection();
+	void defineDirection();
 };

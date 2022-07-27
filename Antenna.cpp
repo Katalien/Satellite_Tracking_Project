@@ -1,56 +1,56 @@
 #include "Antenna.hpp"
 using namespace std;
 
-void Antenna::TrackSatellite(shared_ptr<Satellite> sat) {
+void Antenna::trackSatellite(shared_ptr<Satellite> sat) {
 	Handle handle;
 	int curAzimuth = 0, curElevation = 0;
 	currentSat = sat;
-	currentSat->UpdateData();
-	currentSat->UpdatePassInfo(DateTime::Now());
-	handle.OpenNewFile(sat->GetName(), sat->ToLocalTime(sat->GetAos()));
+	currentSat->updateData();
+	currentSat->updatePassInfo(DateTime::Now());
+	handle.openNewFile(sat->getName(), sat->toLocalTime(sat->getAos()));
 	while (1) {
-		currentSat->UpdateData();
-		if (!currentSat->IsVisible()) {
-			port->TurnOnAngles(AntennaParkAzimuth(), 0);		
+		currentSat->updateData();
+		if (!currentSat->isVisible()) {
+			port->turnOnAngles(antennaParkAzimuth(), 0);		
 			return;
 		}
 
-		handle.WriteFile(sat->ToLocalTime(sat->GetTime()), sat->GetAzimuth(), sat->GetElevation());
+		handle.writeFile(sat->toLocalTime(sat->getTime()), sat->getAzimuth(), sat->getElevation());
 
-		if (IsWaiting() && ConvertAngle((int)sat->GetAzimuth()) > AntennaParkAzimuth()) {
+		if (isWaiting() && convertAngle((int)sat->getAzimuth()) > antennaParkAzimuth()) {
 			cout << "Need to wait " << endl;
 			return;
 		}
 
-		curAzimuth = (int)sat->GetAzimuth();
-		curElevation = (int)sat->GetElevation();
+		curAzimuth = (int)sat->getAzimuth();
+		curElevation = (int)sat->getElevation();
 
-		if (NeedToConvertAngle() ) {
-			if (sat->GetAzimuth() > 0 && sat->GetAzimuth() < 90) {
-				curAzimuth = ConvertAngle((int)sat->GetAzimuth());
+		if (needToConvertAngle() ) {
+			if (sat->getAzimuth() > 0 && sat->getAzimuth() < 90) {
+				curAzimuth = convertAngle((int)sat->getAzimuth());
 			}
 		}
 
-		port->TurnOnAngles(curAzimuth, curElevation);
-		UpdateCurrentAngles();
+		port->turnOnAngles(curAzimuth, curElevation);
+		updateCurrentAngles();
 		
 		// for check
-		cout << sat->ToLocalTime(sat->GetTime()) << endl;
-		cout << sat->GetName() << endl;
-		cout << "Sat: Az: " << sat->GetAzimuth() << " El: " << sat->GetElevation() << endl;
+		cout << sat->toLocalTime(sat->getTime()) << endl;
+		cout << sat->getName() << endl;
+		cout << "Sat: Az: " << sat->getAzimuth() << " El: " << sat->getElevation() << endl;
 		cout << "Ant: Az: " << curAzimuth << " El: " << curElevation << endl;
 		Sleep(1000);
 	}
-	handle.CloseFile();
+	handle.closeFile();
 }
 
-void Antenna::UpdateCurrentAngles() {
-	elevation = port->GetElevation();
-	azimuth = port->GetAzimuth();
+void Antenna::updateCurrentAngles() {
+	elevation = port->getElevation();
+	azimuth = port->getAzimuth();
 }
 
-int Antenna::ParkAzimuthToWest(int const& aosAz, int const& losAz) {
-	if (!CrossZero()) {
+int Antenna::parkAzimuthToWest(int const& aosAz, int const& losAz) {
+	if (!crossZero()) {
 		// track satelite all the way
 		return aosAz;
 	}
@@ -70,8 +70,8 @@ int Antenna::ParkAzimuthToWest(int const& aosAz, int const& losAz) {
 }
 
 // на восток
-int Antenna::ParkAzimuthToEast(int const& aosAz, int const& losAz) {
-	if (!CrossZero()) {
+int Antenna::parkAzimuthToEast(int const& aosAz, int const& losAz) {
+	if (!crossZero()) {
 		// track satelite all the way
 		return aosAz;
 	}
@@ -89,14 +89,14 @@ int Antenna::ParkAzimuthToEast(int const& aosAz, int const& losAz) {
 	return 0;
 }
 
-bool Antenna::IsWaiting() {
-	int aosAz = (int)currentSat->GetAzimuthByTime(currentSat->GetAos());
-	int losAz = (int)currentSat->GetAzimuthByTime(currentSat->GetLos());
-	if (currentSat->GetDirection() == Direction::west) {
-		return DelayToWest(aosAz, losAz);
+bool Antenna::isWaiting() {
+	int aosAz = (int)currentSat->getAzimuthByTime(currentSat->getAos());
+	int losAz = (int)currentSat->getAzimuthByTime(currentSat->getLos());
+	if (currentSat->getDirection() == Direction::west) {
+		return delayToWest(aosAz, losAz);
 	}
-	if (currentSat->GetDirection() == Direction::east) {
-		return DelayToEast(aosAz, losAz);
+	if (currentSat->getDirection() == Direction::east) {
+		return delayToEast(aosAz, losAz);
 	}
 	else {
 		throw exception("Something went wrong. Unknown direction");
@@ -104,63 +104,63 @@ bool Antenna::IsWaiting() {
 	}
 }
 
-int Antenna::AntennaParkAzimuth() {
-	int aosAz = (int)currentSat->GetAzimuthByTime(currentSat->GetAos());
-	int losAz = (int)currentSat->GetAzimuthByTime(currentSat->GetLos());
-	if (currentSat->GetDirection() == Direction::west) { return ParkAzimuthToWest(aosAz, losAz); }
-	if (currentSat->GetDirection() == Direction::east) { return ParkAzimuthToEast(aosAz, losAz); }
+int Antenna::antennaParkAzimuth() {
+	int aosAz = (int)currentSat->getAzimuthByTime(currentSat->getAos());
+	int losAz = (int)currentSat->getAzimuthByTime(currentSat->getLos());
+	if (currentSat->getDirection() == Direction::west) { return parkAzimuthToWest(aosAz, losAz); }
+	if (currentSat->getDirection() == Direction::east) { return parkAzimuthToEast(aosAz, losAz); }
 	else {
 		throw exception("Something went wrong. Unknown direction");
 		exit(-1);
 	}
 }
 
-bool Antenna::DelayToWest(int const& aosAz, int const& losAz) {
+bool Antenna::delayToWest(int const& aosAz, int const& losAz) {
 	return aosAz > 90 && aosAz - 90 < 360 - losAz;
 }
 
-bool Antenna::DelayToEast(int const& aosAz, int const& losAz) {
+bool Antenna::delayToEast(int const& aosAz, int const& losAz) {
 	return losAz > 90 && 360 - aosAz < losAz - 90;
 }
 
-bool Antenna::AzimuthIsInreasing() {
-	double azFirst = currentSat->GetAzimuthByTime(currentSat->GetAos());
-	double azSecond = currentSat->GetAzimuthByTime(currentSat->GetAos().AddMinutes(1.0));
+bool Antenna::azimuthIsInreasing() {
+	double azFirst = currentSat->getAzimuthByTime(currentSat->getAos());
+	double azSecond = currentSat->getAzimuthByTime(currentSat->getAos().AddMinutes(1.0));
 	return azFirst < azSecond;
 }
 
-bool Antenna::CrossSiteLongtitude() {
-	double aosLong = currentSat->GetLongitudeByTime(currentSat->GetAos());
-	double losLong = currentSat->GetLongitudeByTime(currentSat->GetLos());
-	double siteLong = currentSat->radiansToDegrees(currentSat->GetSiteInfo().GetLocation().longitude);
+bool Antenna::crossSiteLongtitude() {
+	double aosLong = currentSat->getLongitudeByTime(currentSat->getAos());
+	double losLong = currentSat->getLongitudeByTime(currentSat->getLos());
+	double siteLong = currentSat->radiansToDegrees(currentSat->getSiteInfo().GetLocation().longitude);
 	return (siteLong > losLong && siteLong < aosLong) || (siteLong < losLong&& siteLong > losLong);
 }
 
-bool Antenna::CrossZero() {
+bool Antenna::crossZero() {
 	//на запад
-	if (currentSat->GetDirection() == Direction::west) {
-		return (currentSat->GetLos() > currentSat->GetAos()) && !AzimuthIsInreasing() && CrossSiteLongtitude();
+	if (currentSat->getDirection() == Direction::west) {
+		return (currentSat->getLos() > currentSat->getAos()) && !azimuthIsInreasing() && crossSiteLongtitude();
 	}
 	//на восток
-	if (currentSat->GetDirection() == Direction::east) {
-		return (currentSat->GetAos() > currentSat->GetLos()) && AzimuthIsInreasing() && CrossSiteLongtitude();
+	if (currentSat->getDirection() == Direction::east) {
+		return (currentSat->getAos() > currentSat->getLos()) && azimuthIsInreasing() && crossSiteLongtitude();
 	}
 	return false;
 }
 
-bool Antenna::NeedToConvertAngle() {
-	int aosAz = (int)currentSat->GetAzimuthByTime(currentSat->GetAos());
-	int losAz = (int)currentSat->GetAzimuthByTime(currentSat->GetLos());
+bool Antenna::needToConvertAngle() {
+	int aosAz = (int)currentSat->getAzimuthByTime(currentSat->getAos());
+	int losAz = (int)currentSat->getAzimuthByTime(currentSat->getLos());
 
-	if (currentSat->GetDirection() == Direction::west) {
-		return CrossZero() && aosAz < 90;
+	if (currentSat->getDirection() == Direction::west) {
+		return crossZero() && aosAz < 90;
 	}
-	if (currentSat->GetDirection() == Direction::east) {
-		return CrossZero() && losAz < 90;
+	if (currentSat->getDirection() == Direction::east) {
+		return crossZero() && losAz < 90;
 	}
 	return false;
 }
 
-int Antenna::ConvertAngle(int const& angle) {
+int Antenna::convertAngle(int const& angle) {
 	return angle + 360;
 }

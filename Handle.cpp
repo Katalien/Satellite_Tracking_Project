@@ -5,7 +5,7 @@
 /// Get all Tle data about active satellites 
 /// </summary>
 /// <returns>String with all Tle data</returns>
-string Handle::GetTleData() {
+string Handle::getTleData() {
     CURL* curl;
     string dataString;
     CURLcode data;
@@ -13,7 +13,7 @@ string Handle::GetTleData() {
     curl = curl_easy_init();
     if (curl) {
         curl_easy_setopt(curl, CURLOPT_URL, url);
-        curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, DataToString);
+        curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, dataToString);
         curl_easy_setopt(curl, CURLOPT_WRITEDATA, &dataString);
         data = curl_easy_perform(curl);
         curl_easy_cleanup(curl);
@@ -27,8 +27,8 @@ string Handle::GetTleData() {
 /// </summary>
 /// <param name="name"> Satelite name</param>
 /// <returns>String with tle data of specific satellite</returns>
-string Handle::GetSatelliteData(string const& name) {
-    string dataString = GetTleData();
+string Handle::getSatelliteData(string const& name) {
+    string dataString = getTleData();
     size_t pos = dataString.find(name);
     if (pos == string::npos) {
         cout << "the satellite doesn't exist" << endl << endl;
@@ -41,12 +41,12 @@ string Handle::GetSatelliteData(string const& name) {
     return info_tmp;
 }
 
-size_t Handle::DataToString(void* contents, size_t size, size_t nmemb, void* userp) {
+size_t Handle::dataToString(void* contents, size_t size, size_t nmemb, void* userp) {
     ((string*)userp)->append((char*)contents, size * nmemb);
     return size * nmemb;
 }
 
-void Handle::OpenNewFile(string const& name, DateTime const& time) {
+void Handle::openNewFile(string const& name, DateTime const& time) {
     int day = time.Day();
     int month = time.Month();
     int hour = time.Hour();
@@ -55,26 +55,26 @@ void Handle::OpenNewFile(string const& name, DateTime const& time) {
     file.open(path);
 }
 
-void Handle::WriteFile(string const& data ) {
+void Handle::writeFile(string const& data ) {
     if (file.is_open()) {
         file << data << endl;
     }
 }
 
-void Handle::WriteFile(DateTime const& time, int const& azimuth, int const& elevation) {
+void Handle::writeFile(DateTime const& time, int const& azimuth, int const& elevation) {
     if (file.is_open()) {
         file << time << " " << " Az: " << azimuth << " El: " << elevation << endl;
     }
     else { cout << "file is not open" << endl; }
 }
 
-void Handle::WriteFile(DateTime const& time, int const& azimuth, int const& elevation, int const& antAz, int const& antEl) {
+void Handle::writeFile(DateTime const& time, int const& azimuth, int const& elevation, int const& antAz, int const& antEl) {
     if (file.is_open()) {
         file << time << " " << " Az: " << azimuth << " El: " << elevation << endl << " AAz: " << antAz << " AEl " << antEl << endl;
     }
     else { cout << "file is not open" << endl; }
 }
 
-void Handle::CloseFile() {
+void Handle::closeFile() {
     file.close();
 }

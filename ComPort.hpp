@@ -8,23 +8,23 @@ class ComPort {
 public:
 	ComPort() { portName = L"COM3"; }; // default
 	ComPort(LPCTSTR portName) : portName(portName) {};
-	void GetConnection();
-	void ClosePort();
-	void GiveCommand(string const& com);
-	void ReadCOM();
-	void TurnOnAngles(double azimuth, double elevation);
-	void PrintCurrentAngles();
-	int GetAzimuth();
-	int GetElevation();
-	~ComPort() { ClosePort(); };
+	void getConnection();
+	void closePort();
+	void giveCommand(string const& com);
+	void readCOM();
+	void turnOnAngles(double azimuth, double elevation);
+	void printCurrentAngles();
+	int getAzimuth();
+	int getElevation();
+	~ComPort() { closePort(); };
 
 private:
 	HANDLE hSerial{};
 	LPCTSTR portName;
 
-	void SetConnectionParams();  // default
-	int ReadOneAngle();
-	int ToAngle(char* data);
-	string MakeTurnCommand(int const& az, int const& el);
-	string MakeAngle(int x);
+	void setConnectionParams();  // default
+	int readOneAngle();
+	int toAngle(char* data);
+	string makeTurnCommand(int const& az, int const& el);
+	string makeAngle(int x);
 };

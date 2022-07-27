@@ -13,17 +13,17 @@ class Program {
 public:
 	Program() = default;
 	Program(int const& argc, char** argv);
-	void Run();
-	po::variables_map ReadCmdLine(int const& argc, char** argv);
-	void Predict(const shared_ptr<SatTrackInterface> track, int const& days);
-	void Track(const shared_ptr<SatTrackInterface>& track);
-	void AutoTracking(const shared_ptr<SatTrackInterface>& track);
+	void run();
+	po::variables_map readCmdLine(int const& argc, char** argv);
+	void predict(const shared_ptr<SatTrackInterface> track, int const& days);
+	void track(const shared_ptr<SatTrackInterface>& track);
+	void autoTracking(const shared_ptr<SatTrackInterface>& track);
 
 private:
 	int argc;
 	char** argv;
 	vector<string> params;
 	po::options_description desc{ "Options" };
-	shared_ptr<Satellite> NextSat(const vector<shared_ptr<Satellite>>& satArray);
-	shared_ptr<Satellite> MaxElevationSat(const vector<shared_ptr<Satellite>>& satList);
+	shared_ptr<Satellite> nextSat(const vector<shared_ptr<Satellite>>& satArray);
+	shared_ptr<Satellite> maxElevationSat(const vector<shared_ptr<Satellite>>& satList);
 };

@@ -5,26 +5,13 @@ SatTrackInterface::SatTrackInterface(LPCTSTR portName) {
 	satellites.push_back(sat);
 }
 
-SatTrackInterface::SatTrackInterface(int amount, ...) {
-	tle = make_shared<TleData>();
-	va_list list;
-	va_start(list, amount);
-	for (int i = 0; i < amount; ++i) {
-		string name = va_arg(list, string);
-		string info = tle->GetSatelliteData(name);
-		shared_ptr<Satellite> sat = make_shared<Satellite>(info, name);
-		satellites.push_back(sat);
-	}
-	va_end(list);
-}
-
-SatTrackInterface::SatTrackInterface(vector<string> const& names) {
+SatTrackInterface::SatTrackInterface(vector<string> const& names, double siteLat, double siteLong, int timeSpan) {
 	tle = make_shared<TleData>();
 	for (auto& name : names) {
 		string info;
 		try {
-			info = tle->GetSatelliteData(name);
-			satellites.emplace_back(make_shared<Satellite>(info, name));
+			info = tle->getSatelliteData(name);
+			satellites.emplace_back(make_shared<Satellite>(info, name, siteLat, siteLong, timeSpan));
 		}
 		catch (const std::exception& ex) {
 			cout << ex.what() << " Check the entered data " << endl;
@@ -33,10 +20,13 @@ SatTrackInterface::SatTrackInterface(vector<string> const& names) {
 	}
 }
 
-void SatTrackInterface::ConnectAntena() {
+/// <summary>
+/// Get connection to the antenna
+/// </summary>
+void SatTrackInterface::connectAntena() {
 	port = make_shared<ComPort>(L"COM3");
 	try {
-		port->GetConnection();
+		port->getConnection();
 	}
 	catch (const std::exception& ex) {
 		cout << ex.what() << endl;
@@ -45,18 +35,21 @@ void SatTrackInterface::ConnectAntena() {
 	antenna = make_shared<Antenna>(port);
 }
 
-shared_ptr<Satellite> SatTrackInterface::GetSatellite() const {
+/// <summary>
+/// If there is only one satellite on the container - return it
+/// </summary>
+/// <returns></returns>
+shared_ptr<Satellite> SatTrackInterface::getSatellite() const {
 	if (satellites.size() == 1) {
 		return satellites.at(0);
 	}
 	return nullptr;
 }
 
-shared_ptr <Satellite> SatTrackInterface::GetSatelliteByName(string const& name) const {
-	for (auto& sat : satellites) {
-		if (sat->GetName() == name) {
-			return sat;
-		}
-	}
-	return nullptr;
-}
+/// <summary>
+/// Get satellite from the container by its name
+/// </summary>
+/// <param name="name"> The name of the satellite </param>
+/// <returns> Smart pointer to the satellite </returns>
+shared_ptr <Satellite> SatTrackInterface::getSatelliteByName(string const& name) const {
+	for (auto& sat : satellit

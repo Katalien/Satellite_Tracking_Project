@@ -18,22 +18,22 @@ class PassDetails;
 
 class Handle {
 public:
-    string GetTleData();
+    string getTleData();
 
-    string GetSatelliteData(string const& tleData);
+    string getSatelliteData(string const& tleData);
 
-    void OpenNewFile(string const& name, DateTime const& time);
+    void openNewFile(string const& name, DateTime const& time);
 
-    void WriteFile(string const& data);
+    void writeFile(string const& data);
 
-    void WriteFile(DateTime const& time, int const& azimuth, int const& elevation);
+    void writeFile(DateTime const& time, int const& azimuth, int const& elevation);
 
-    void WriteFile(DateTime const& time, int const& azimuth, int const& elevation, int const& antAz, int const& antEl);
+    void writeFile(DateTime const& time, int const& azimuth, int const& elevation, int const& antAz, int const& antEl);
 
-    void CloseFile();
+    void closeFile();
 
 private:
     ofstream file;
 
-    static size_t DataToString(void* contents, size_t size, size_t nmemb, void* userp);
+    static size_t dataToString(void* contents, size_t size, size_t nmemb, void* userp);
 };
