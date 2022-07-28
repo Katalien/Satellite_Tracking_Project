@@ -7,7 +7,7 @@ using namespace std;
 class ComPort {
 public:
 	ComPort() { portName = L"COM3"; }; // default
-	ComPort(wstring portName) : portName(portName) {};
+	ComPort(wstring const& portName) : portName(portName) {};
 	void getConnection();
 	void closePort();
 	void giveCommand(string const& com);

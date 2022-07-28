@@ -15,15 +15,15 @@ public:
 	Program(int const& argc, char** argv);
 	void run();
 	po::variables_map readCmdLine(int const& argc, char** argv);
-	void predict(const shared_ptr<SatTrackInterface> track, int const& days);
-	void track(const shared_ptr<SatTrackInterface>& track);
-	void autoTracking(const shared_ptr<SatTrackInterface>& track);
+	void predict(const shared_ptr<SatTrackInterface> track, int const& days) const ;
+	void track(const shared_ptr<SatTrackInterface>& track) const;
+	void autoTracking(const shared_ptr<SatTrackInterface>& track) const;
 
 private:
 	int argc;
 	char** argv;
 	vector<string> params;
 	po::options_description desc{ "Options" };
-	shared_ptr<Satellite> nextSat(const vector<shared_ptr<Satellite>>& satArray);
-	shared_ptr<Satellite> maxElevationSat(const vector<shared_ptr<Satellite>>& satList);
+	shared_ptr<Satellite> nextSat(const vector<shared_ptr<Satellite>>& satArray) const;
+	shared_ptr<Satellite> maxElevationSat(const vector<shared_ptr<Satellite>>& satList) const;
 };

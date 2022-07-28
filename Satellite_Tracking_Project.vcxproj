@@ -159,10 +159,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Antenna.cpp" />
     <ClCompile Include="ComPort.cpp" />
-    <ClCompile Include="com_command_test.cpp" />
-    <ClCompile Include="com_connect_test.cpp" />
-    <ClCompile Include="functions_test.cpp" />
     <ClCompile Include="Handle.cpp" />
     <ClCompile Include="libsgp4\CoordGeodetic.cc" />
     <ClCompile Include="libsgp4\CoordTopocentric.cc" />
@@ -180,7 +178,6 @@
     <ClCompile Include="libsgp4\TleException.cc" />
     <ClCompile Include="libsgp4\Util.cc" />
     <ClCompile Include="libsgp4\Vector.cc" />
-    <ClCompile Include="master.cpp" />
     <ClCompile Include="orbitTools\core\cEci.cpp" />
     <ClCompile Include="orbitTools\core\cJulian.cpp" />
     <ClCompile Include="orbitTools\core\coord.cpp" />
@@ -195,19 +192,19 @@
     <ClCompile Include="orbitTools\orbit\cOrbit.cpp" />
     <ClCompile Include="orbitTools\orbit\cSatellite.cpp" />
     <ClCompile Include="orbitTools\orbit\stdafx.cpp" />
-    <ClCompile Include="PortCommand.cpp" />
     <ClCompile Include="Program.cpp" />
     <ClCompile Include="Satellite.cpp" />
+    <ClCompile Include="SatTrackInterface.cpp" />
+    <ClCompile Include="TleData.cpp" />
     <ClCompile Include="User.cpp" />
-    <ClCompile Include="work_version.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Antenna.hpp" />
     <ClInclude Include="ComPort.hpp" />
     <ClInclude Include="Handle.hpp" />
-    <ClInclude Include="PortCommand.hpp" />
     <ClInclude Include="Program.hpp" />
     <ClInclude Include="Satellite.hpp" />
+    <ClInclude Include="SatTrackInterface.hpp" />
     <ClInclude Include="TleData.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

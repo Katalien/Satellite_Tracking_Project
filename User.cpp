@@ -23,12 +23,8 @@ namespace po = boost::program_options;
 // site
 // обновдение данных - стирать пред значения
 
-void f(int x = 4) {
-	cout << x << endl;
-}
-
 int main(int argc, char* argv[]) {
-	shared_ptr<Program> program = make_shared<Program>(argc, argv);
+	auto program = make_shared<Program>(argc, argv);
 	program->run();
 	return 0;
 }
