@@ -8,7 +8,7 @@
 #include <CoordGeodetic.h>
 #include <Observer.h>
 #include <fstream>
-#include "curl/curl.h"
+#include <curl.h>
 
 using namespace std;
 
