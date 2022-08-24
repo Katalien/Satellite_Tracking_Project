@@ -12,7 +12,7 @@ using namespace std;
 /// Connect to the COM port
 /// </summary>
 void ComPort::getConnection() {
-    hSerial = ::CreateFile(portName.c_str(), GENERIC_READ | GENERIC_WRITE, 0, 0, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0);
+    hSerial = ::CreateFile((LPCSTR)portName.c_str(), GENERIC_READ | GENERIC_WRITE, 0, 0, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0);
     if (hSerial == INVALID_HANDLE_VALUE) {
         if (GetLastError() == ERROR_FILE_NOT_FOUND) {
             throw exception("serial port does not exist.\n");

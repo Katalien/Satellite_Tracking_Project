@@ -397,7 +397,7 @@ public:
         }
 
         int maxday = DaysInMonth(year, month);
-        day = std::min(day, maxday);
+        day = day > maxday ? maxday : day;
 
         return DateTime(year, month, day).Add(TimeOfDay());
     }
